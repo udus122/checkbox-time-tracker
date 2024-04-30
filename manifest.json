@@ -1,11 +1,11 @@
 {
-	"id": "task-chute-obsidian",
-	"name": "TaskChute Obsidian",
-	"version": "1.0.0",
-	"minAppVersion": "0.15.0",
-	"description": "TaskChute Utility for Obsidian",
-	"author": "UD",
-	"authorUrl": "https://notes.udus.dev",
-	"fundingUrl": "",
-	"isDesktopOnly": false
+  "id": "task-chute-obsidian",
+  "name": "TaskChute Obsidian",
+  "version": "1.0.0",
+  "minAppVersion": "0.15.0",
+  "description": "TaskChute Utility for Obsidian",
+  "author": "UD",
+  "authorUrl": "https://notes.udus.dev",
+  "fundingUrl": "",
+  "isDesktopOnly": false
 }
