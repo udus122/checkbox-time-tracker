@@ -1,4 +1,4 @@
-import { newLivePreviewExtension } from "LivePreview";
+import { newLivePreviewExtension } from "./LivePreview";
 import { Plugin } from "obsidian";
 
 // Remember to rename these classes and interfaces!

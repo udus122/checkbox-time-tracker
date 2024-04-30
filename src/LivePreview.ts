@@ -63,7 +63,7 @@ class LivePreviewExtension implements PluginValue {
       changes: {
         from: line.from,
         to: line.to,
-        insert: `${line.text}!`,
+        insert: `${line.text}?`,
       },
     });
     this.view.dispatch(transaction);
