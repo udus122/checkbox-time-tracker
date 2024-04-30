@@ -1,9 +1,11 @@
 input[data-task="-"]:checked,
 li[data-task="-"] > input:checked,
 li[data-task="-"] > p > input:checked,
+li[data-task="-"] > p > input:hover,
 input[data-task="*"]:checked,
 li[data-task="*"] > input:checked,
-li[data-task="*"] > p > input:checked {
+li[data-task="*"] > p > input:checked,
+li[data-task="*"] > p > input:checked:hover {
   --checkbox-marker-color: transparent;
   border: none;
   border-radius: 0;
