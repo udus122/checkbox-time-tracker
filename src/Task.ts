@@ -3,13 +3,6 @@ import { TaskRegularExpressions } from "./TaskRegularExpressions";
 import { Status } from "./Status";
 import { Notice } from "obsidian";
 
-export type TaskComponents = {
-  indentation: string;
-  listMarker: string;
-  status: Status;
-  body: string;
-};
-
 export class Task {
   public readonly indentation: string;
   public readonly listMarker: string;
@@ -72,6 +65,27 @@ export class Task {
     });
   }
 
+  static extractTaskComponents(line: string): TaskComponents | null {
+    // Check the line to see if it is a markdown task.
+    const regexMatch = line.match(TaskRegularExpressions.taskRegex);
+
+    if (regexMatch === null) {
+      return null;
+    }
+
+    const indentation = regexMatch[1];
+    const listMarker = regexMatch[2];
+
+    // Get the status of the task.
+    const statusSymbol = regexMatch[3];
+    const status = Status.fromSymbol(statusSymbol);
+
+    // match[4] includes the whole body of the task after the brackets.
+    const body = regexMatch[4].trim();
+
+    return { indentation, listMarker, status, body };
+  }
+
   public static extractTaskInfo(body: string): {
     start_time_actual: Moment | null;
     start_time_planed: Moment | null;
@@ -95,26 +109,6 @@ export class Task {
       duration_actual,
       duration_planed,
     };
-  }
-
-  static extractTaskComponents(line: string): TaskComponents | null {
-    // Check the line to see if it is a markdown task.
-    const regexMatch = line.match(TaskRegularExpressions.taskRegex);
-    if (regexMatch === null) {
-      return null;
-    }
-
-    const indentation = regexMatch[1];
-    const listMarker = regexMatch[2];
-
-    // Get the status of the task.
-    const statusSymbol = regexMatch[3];
-    const status = Status.fromSymbol(statusSymbol);
-
-    // match[4] includes the whole body of the task after the brackets.
-    const body = regexMatch[4].trim();
-
-    return { indentation, listMarker, status, body };
   }
 
   public cancel(): Task {
