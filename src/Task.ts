@@ -1,5 +1,4 @@
-import type { Moment } from "moment";
-import { TaskRegularExpressions } from "./TaskRegularExpressions";
+import type { Duration, Moment } from "moment";
 import { Status } from "./Status";
 import { Notice } from "obsidian";
 
