@@ -2,16 +2,6 @@ import type { Duration, Moment } from "moment";
 import { Status } from "./Status";
 import moment from "moment";
 
-export type TaskComponents = {
-  indentation: string;
-  listMarker: string;
-  statusSymbol: string;
-  start?: string;
-  end?: string;
-  duration?: string;
-  body: string;
-};
-
 /** Match the indentation at the beginning of a line */
 const INDENTATION_REGEX = /^(?<indentation>[\s\t]*)/;
 
@@ -78,8 +68,8 @@ export function parseCheckboxComponents(line: string): {
   };
 }
 
-type TaskTime = { time?: Moment; estimation?: Moment };
-type TaskDuration = { time?: Duration; estimation?: Duration };
+export type ExtractedTime = { time?: Moment; estimation?: Moment };
+export type ExtractedDuration = { time?: Duration; estimation?: Duration };
 
 /**
  * Match below patterns:
@@ -108,11 +98,6 @@ export const extractTaskTime = (
   };
 };
 
-// type TaskTime = {
-//   actual?: Moment | Duration;
-//   planed?: Moment | Duration;
-// };
-
 function parseTime(time: string): Moment {
   return moment(time, "HH:mm");
 }
@@ -122,10 +107,10 @@ function parseDuration(time: string): Duration {
 }
 
 export function parseTask(body: string): {
-  start: TaskTime | null;
-  end: TaskTime | null;
-  duration: TaskDuration | null;
-  task: string[];
+  start: ExtractedTime | null;
+  end: ExtractedTime | null;
+  duration: ExtractedDuration | null;
+  task: string;
 } {
   // split body by comma and loop through each part
   const bodyArray = body.split(",");
@@ -138,7 +123,7 @@ export function parseTask(body: string): {
       start: null,
       end: null,
       duration: null,
-      task: bodyArray,
+      task: bodyArray.join(","),
     };
   }
 
@@ -157,7 +142,7 @@ export function parseTask(body: string): {
       start,
       end: null,
       duration: null,
-      task: bodyArray.slice(1),
+      task: bodyArray.slice(1).join(","),
     };
   }
 
@@ -174,7 +159,7 @@ export function parseTask(body: string): {
       start,
       end,
       duration: null,
-      task: bodyArray.slice(2),
+      task: bodyArray.slice(2).join(","),
     };
   }
 
@@ -189,6 +174,6 @@ export function parseTask(body: string): {
     start,
     end,
     duration,
-    task: bodyArray.slice(3),
+    task: bodyArray.slice(3).join(","),
   };
 }

@@ -136,11 +136,9 @@ describe("parseTask", () => {
       time: moment.duration("2:30"),
       estimation: undefined,
     });
-    expect(result.task).toEqual([
-      "タスクのタイトル",
-      "タグ(オプショナル)",
-      "メモ(オプショナル)",
-    ]);
+    expect(result.task).toEqual(
+      "タスクのタイトル,タグ(オプショナル),メモ(オプショナル)"
+    );
   });
 
   it("(3列) (開始),(終了),(時間),タイトル", () => {
@@ -159,11 +157,9 @@ describe("parseTask", () => {
       time: undefined,
       estimation: moment.duration("2:30"),
     });
-    expect(result.task).toEqual([
-      "タスクのタイトル",
-      "タグ(オプショナル)",
-      "メモ(オプショナル)",
-    ]);
+    expect(result.task).toBe(
+      "タスクのタイトル,タグ(オプショナル),メモ(オプショナル)"
+    );
   });
 
   it("(3列) 開始(見積),終了(見積),時間(見積),タイトル", () => {
@@ -182,11 +178,9 @@ describe("parseTask", () => {
       time: moment.duration("2:20"),
       estimation: moment.duration("2:30"),
     });
-    expect(result.task).toEqual([
-      "タスクのタイトル",
-      "タグ(オプショナル)",
-      "メモ(オプショナル)",
-    ]);
+    expect(result.task).toEqual(
+      "タスクのタイトル,タグ(オプショナル),メモ(オプショナル)"
+    );
   });
 
   it("(3列) 開始,終了,時間 (タスクの内容が未定義)", () => {
@@ -204,7 +198,7 @@ describe("parseTask", () => {
       time: moment.duration("2:30"),
       estimation: undefined,
     });
-    expect(result.task).toEqual([]);
+    expect(result.task).toEqual("");
   });
 
   it("(3列) 開始,終了,,タイトル", () => {
@@ -223,11 +217,9 @@ describe("parseTask", () => {
       time: undefined,
       estimation: undefined,
     });
-    expect(result.task).toEqual([
-      "タスクのタイトル",
-      "タグ(オプショナル)",
-      "メモ(オプショナル)",
-    ]);
+    expect(result.task).toEqual(
+      "タスクのタイトル,タグ(オプショナル),メモ(オプショナル)"
+    );
   });
 
   it("(3列) (開始),(終了),,タイトル", () => {
@@ -246,11 +238,9 @@ describe("parseTask", () => {
       time: undefined,
       estimation: undefined,
     });
-    expect(result.task).toEqual([
-      "タスクのタイトル",
-      "タグ(オプショナル)",
-      "メモ(オプショナル)",
-    ]);
+    expect(result.task).toEqual(
+      "タスクのタイトル,タグ(オプショナル),メモ(オプショナル)"
+    );
   });
 
   it("(3列) 開始(見積),終了(見積),,タイトル", () => {
@@ -269,11 +259,9 @@ describe("parseTask", () => {
       time: undefined,
       estimation: undefined,
     });
-    expect(result.task).toEqual([
-      "タスクのタイトル",
-      "タグ(オプショナル)",
-      "メモ(オプショナル)",
-    ]);
+    expect(result.task).toEqual(
+      "タスクのタイトル,タグ(オプショナル),メモ(オプショナル)"
+    );
   });
 
   it("(3列) 開始,,時間,タイトル", () => {
@@ -292,11 +280,9 @@ describe("parseTask", () => {
       time: moment.duration("2:30"),
       estimation: undefined,
     });
-    expect(result.task).toEqual([
-      "タスクのタイトル",
-      "タグ(オプショナル)",
-      "メモ(オプショナル)",
-    ]);
+    expect(result.task).toEqual(
+      "タスクのタイトル,タグ(オプショナル),メモ(オプショナル)"
+    );
   });
 
   it("(3列) (開始),,(時間),タイトル", () => {
@@ -315,11 +301,9 @@ describe("parseTask", () => {
       time: undefined,
       estimation: moment.duration("2:30"),
     });
-    expect(result.task).toEqual([
-      "タスクのタイトル",
-      "タグ(オプショナル)",
-      "メモ(オプショナル)",
-    ]);
+    expect(result.task).toEqual(
+      "タスクのタイトル,タグ(オプショナル),メモ(オプショナル)"
+    );
   });
 
   it("(3列) 開始(見積),,時間(見積),タイトル", () => {
@@ -338,11 +322,9 @@ describe("parseTask", () => {
       time: moment.duration("2:20"),
       estimation: moment.duration("2:30"),
     });
-    expect(result.task).toEqual([
-      "タスクのタイトル",
-      "タグ(オプショナル)",
-      "メモ(オプショナル)",
-    ]);
+    expect(result.task).toEqual(
+      "タスクのタイトル,タグ(オプショナル),メモ(オプショナル)"
+    );
   });
 
   it("(3列) ,終了,時間,タイトル", () => {
@@ -360,7 +342,7 @@ describe("parseTask", () => {
       time: moment.duration("2:30"),
       estimation: undefined,
     });
-    expect(result.task).toEqual(["タイトル"]);
+    expect(result.task).toEqual("タイトル");
   });
 
   it("(3列) ,(終了),(時間),タイトル", () => {
@@ -378,7 +360,7 @@ describe("parseTask", () => {
       time: undefined,
       estimation: moment.duration("2:30"),
     });
-    expect(result.task).toEqual(["タイトル"]);
+    expect(result.task).toEqual("タイトル");
   });
 
   it("(3列) ,終了(見積),時間(見積),タイトル", () => {
@@ -396,7 +378,7 @@ describe("parseTask", () => {
       time: moment.duration("2:20"),
       estimation: moment.duration("2:30"),
     });
-    expect(result.task).toEqual(["タイトル"]);
+    expect(result.task).toEqual("タイトル");
   });
 
   it("(3列) 開始,,,タイトル", () => {
@@ -414,7 +396,7 @@ describe("parseTask", () => {
       time: undefined,
       estimation: undefined,
     });
-    expect(result.task).toEqual(["タイトル"]);
+    expect(result.task).toEqual("タイトル");
   });
 
   it("(3列) (開始),,,タイトル", () => {
@@ -432,7 +414,7 @@ describe("parseTask", () => {
       time: undefined,
       estimation: undefined,
     });
-    expect(result.task).toEqual(["タイトル"]);
+    expect(result.task).toEqual("タイトル");
   });
 
   it("(3列) 開始(見積),,,タイトル", () => {
@@ -450,7 +432,7 @@ describe("parseTask", () => {
       time: undefined,
       estimation: undefined,
     });
-    expect(result.task).toEqual(["タイトル"]);
+    expect(result.task).toEqual("タイトル");
   });
 
   it("(3列) ,終了,,タイトル", () => {
@@ -468,7 +450,7 @@ describe("parseTask", () => {
       time: undefined,
       estimation: undefined,
     });
-    expect(result.task).toEqual(["タイトル"]);
+    expect(result.task).toEqual("タイトル");
   });
 
   it("(3列) ,(終了),,タイトル", () => {
@@ -486,7 +468,7 @@ describe("parseTask", () => {
       time: undefined,
       estimation: undefined,
     });
-    expect(result.task).toEqual(["タイトル"]);
+    expect(result.task).toEqual("タイトル");
   });
 
   it("(3列) ,終了(見積),,タイトル", () => {
@@ -504,7 +486,7 @@ describe("parseTask", () => {
       time: undefined,
       estimation: undefined,
     });
-    expect(result.task).toEqual(["タイトル"]);
+    expect(result.task).toEqual("タイトル");
   });
 
   it("(3列) ,,時間,タイトル", () => {
@@ -522,7 +504,7 @@ describe("parseTask", () => {
       time: moment.duration("2:30"),
       estimation: undefined,
     });
-    expect(result.task).toEqual(["タイトル"]);
+    expect(result.task).toEqual("タイトル");
   });
 
   it("(3列) ,,(時間),タイトル", () => {
@@ -540,7 +522,7 @@ describe("parseTask", () => {
       time: undefined,
       estimation: moment.duration("2:30"),
     });
-    expect(result.task).toEqual(["タイトル"]);
+    expect(result.task).toEqual("タイトル");
   });
 
   it("(3列) ,,時間(見積),タイトル", () => {
@@ -558,7 +540,7 @@ describe("parseTask", () => {
       time: moment.duration("2:20"),
       estimation: moment.duration("2:30"),
     });
-    expect(result.task).toEqual(["タイトル"]);
+    expect(result.task).toEqual("タイトル");
   });
 
   it("(2列) 開始,終了,タイトル", () => {
@@ -573,7 +555,7 @@ describe("parseTask", () => {
       estimation: undefined,
     });
     expect(result.duration).toEqual(null);
-    expect(result.task).toEqual(["タイトル"]);
+    expect(result.task).toEqual("タイトル");
   });
 
   it("(2列) (開始),(終了),タイトル", () => {
@@ -588,7 +570,7 @@ describe("parseTask", () => {
       estimation: moment("14:30", "HH:mm"),
     });
     expect(result.duration).toEqual(null);
-    expect(result.task).toEqual(["タイトル"]);
+    expect(result.task).toEqual("タイトル");
   });
 
   it("(2列) 開始(見積),終了(見積),タイトル", () => {
@@ -603,7 +585,7 @@ describe("parseTask", () => {
       estimation: moment("14:30", "HH:mm"),
     });
     expect(result.duration).toEqual(null);
-    expect(result.task).toEqual(["タイトル"]);
+    expect(result.task).toEqual("タイトル");
   });
 
   it("(2列) ,終了,タイトル", () => {
@@ -618,11 +600,9 @@ describe("parseTask", () => {
       estimation: undefined,
     });
     expect(result.duration).toEqual(null);
-    expect(result.task).toEqual([
-      "タイトル",
-      "タグ(オプショナル)",
-      "メモ(オプショナル)",
-    ]);
+    expect(result.task).toEqual(
+      "タイトル,タグ(オプショナル),メモ(オプショナル)"
+    );
   });
 
   it("(2列) ,(終了),タイトル", () => {
@@ -637,11 +617,9 @@ describe("parseTask", () => {
       estimation: moment("14:30", "HH:mm"),
     });
     expect(result.duration).toEqual(null);
-    expect(result.task).toEqual([
-      "タイトル",
-      "タグ(オプショナル)",
-      "メモ(オプショナル)",
-    ]);
+    expect(result.task).toEqual(
+      "タイトル,タグ(オプショナル),メモ(オプショナル)"
+    );
   });
 
   it("(2列) ,終了(見積),タイトル", () => {
@@ -656,11 +634,9 @@ describe("parseTask", () => {
       estimation: moment("14:30", "HH:mm"),
     });
     expect(result.duration).toEqual(null);
-    expect(result.task).toEqual([
-      "タイトル",
-      "タグ(オプショナル)",
-      "メモ(オプショナル)",
-    ]);
+    expect(result.task).toEqual(
+      "タイトル,タグ(オプショナル),メモ(オプショナル)"
+    );
   });
 
   it("(1列) 開始,タイトル", () => {
@@ -672,11 +648,9 @@ describe("parseTask", () => {
     });
     expect(result.end).toEqual(null);
     expect(result.duration).toEqual(null);
-    expect(result.task).toEqual([
-      "タイトル",
-      "タグ(オプショナル)",
-      "メモ(オプショナル)",
-    ]);
+    expect(result.task).toEqual(
+      "タイトル,タグ(オプショナル),メモ(オプショナル)"
+    );
   });
 
   it("(1列) (開始),タイトル", () => {
@@ -688,11 +662,9 @@ describe("parseTask", () => {
     });
     expect(result.end).toEqual(null);
     expect(result.duration).toEqual(null);
-    expect(result.task).toEqual([
-      "タイトル",
-      "タグ(オプショナル)",
-      "メモ(オプショナル)",
-    ]);
+    expect(result.task).toEqual(
+      "タイトル,タグ(オプショナル),メモ(オプショナル)"
+    );
   });
 
   it("(1列) 開始(見積),タイトル", () => {
@@ -704,11 +676,9 @@ describe("parseTask", () => {
     });
     expect(result.end).toEqual(null);
     expect(result.duration).toEqual(null);
-    expect(result.task).toEqual([
-      "タイトル",
-      "タグ(オプショナル)",
-      "メモ(オプショナル)",
-    ]);
+    expect(result.task).toEqual(
+      "タイトル,タグ(オプショナル),メモ(オプショナル)"
+    );
   });
 
   it("(0列) タイトル", () => {
@@ -717,10 +687,8 @@ describe("parseTask", () => {
     expect(result.start).toEqual(null);
     expect(result.end).toEqual(null);
     expect(result.duration).toEqual(null);
-    expect(result.task).toEqual([
-      "タスクのタイトル",
-      "タグ(オプショナル)",
-      "メモ(オプショナル)",
-    ]);
+    expect(result.task).toEqual(
+      "タスクのタイトル,タグ(オプショナル),メモ(オプショナル)"
+    );
   });
 });
