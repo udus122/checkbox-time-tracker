@@ -1,112 +1,73 @@
-import type { Duration, Moment } from "moment";
 import { Status } from "./Status";
 import { Notice } from "obsidian";
+import { TaskInput, TimeInput } from "./TaskInput";
+import type { Duration, Moment } from "moment";
 
+export type TaskTime = {
+  actual?: Moment;
+  planed?: Moment;
+};
+
+export type TaskDuration = {
+  actual?: Duration;
+  planed?: Duration;
+};
 export class Task {
   public readonly indentation: string;
   public readonly listMarker: string;
   public readonly status: Status;
   public readonly body: string;
-  public readonly start_time_actual: Moment | null;
-  public readonly start_time_planed: Moment | null;
-  public readonly end_time_actual: Moment | null;
-  public readonly end_time_planed: Moment | null;
-  public readonly duration_actual: Moment | null;
-  public readonly duration_planed: Moment | null;
+  public readonly start: TaskTime | null;
+  public readonly end: TaskTime | null;
+  public readonly duration: TaskDuration | null;
 
   constructor({
     indentation,
     listMarker,
     status,
     body,
-    start_time_actual,
-    start_time_planed,
-    end_time_actual,
-    end_time_planed,
-    duration_actual,
-    duration_planed,
+    start,
+    end,
+    duration,
   }: {
     indentation: string;
     listMarker: string;
     status: Status;
+    start: TaskTime | null;
+    end: TaskTime | null;
+    duration: TaskDuration | null;
     body: string;
-    start_time_actual: Moment | null;
-    start_time_planed: Moment | null;
-    end_time_actual: Moment | null;
-    end_time_planed: Moment | null;
-    duration_actual: Moment | null;
-    duration_planed: Moment | null;
   }) {
     this.indentation = indentation;
     this.listMarker = listMarker;
     this.status = status;
+    this.start = start;
+    this.end = end;
+    this.duration = duration;
     this.body = body;
-    this.start_time_actual = start_time_actual;
-    this.start_time_planed = start_time_planed;
-    this.end_time_actual = end_time_actual;
-    this.end_time_planed = end_time_planed;
-    this.duration_actual = duration_actual;
-    this.duration_planed = duration_planed;
   }
 
   public static fromLine(line: string): Task | null {
-    const taskComponents = Task.extractTaskComponents(line);
-    // Check the line to see if it is a markdown task.
-    if (taskComponents === null) {
+    const taskComponents = TaskInput.fromLine(line);
+
+    const task = Task.fromTaskInput(taskComponents);
+
+    if (task === null) {
       return null;
     }
 
-    const taskInfo = Task.extractTaskInfo(taskComponents.body);
-
-    return new Task({
-      ...taskComponents,
-      ...taskInfo,
-    });
+    return task;
   }
 
-  static extractTaskComponents(line: string): TaskComponents | null {
-    // Check the line to see if it is a markdown task.
-    const regexMatch = line.match(TaskRegularExpressions.taskRegex);
-
-    if (regexMatch === null) {
-      return null;
-    }
-
-    const indentation = regexMatch[1];
-    const listMarker = regexMatch[2];
-
-    // Get the status of the task.
-    const statusSymbol = regexMatch[3];
-    const status = Status.fromSymbol(statusSymbol);
-
-    // match[4] includes the whole body of the task after the brackets.
-    const body = regexMatch[4].trim();
-
-    return { indentation, listMarker, status, body };
+  static fromTaskInput(taskInput: TaskInput): Task | null {
+    // TODO: Implement this method.
+    throw new Error("Not implemented");
   }
 
-  public static extractTaskInfo(body: string): {
-    start_time_actual: Moment | null;
-    start_time_planed: Moment | null;
-    end_time_actual: Moment | null;
-    end_time_planed: Moment | null;
-    duration_actual: Moment | null;
-    duration_planed: Moment | null;
-  } {
-    const start_time_actual = null;
-    const start_time_planed = null;
-    const end_time_actual = null;
-    const end_time_planed = null;
-    const duration_actual = null;
-    const duration_planed = null;
-
+  static convertExtractedTimeToTaskTime(time: TimeInput): TaskTime {
     return {
-      start_time_actual,
-      start_time_planed,
-      end_time_actual,
-      end_time_planed,
-      duration_actual,
-      duration_planed,
+      actual: time.time,
+      planed: time.estimation,
     };
   }
 
