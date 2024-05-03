@@ -88,7 +88,7 @@ export class Status {
       StatusSymbol.DONE,
       "Done",
       StatusType.DONE,
-      StatusType.TODO
+      StatusType.DONE
     );
   }
 
