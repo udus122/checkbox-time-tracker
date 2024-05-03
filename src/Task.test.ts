@@ -105,9 +105,9 @@ describe("fromLine", () => {
     expect(task!.duration!.plan).toEqual(moment.duration("2:30"));
   });
 
-  it("- [*] 12:05(12:00),14:25(14:30),02:20(2:30),Task content,#tag,comment", () => {
+  it("- [/] 12:05(12:00),14:25(14:30),02:20(2:30),Task content,#tag,comment", () => {
     const line =
-      "- [*] 12:05(12:00),14:25(14:30),02:20(2:30),Task content,#tag,comment";
+      "- [/] 12:05(12:00),14:25(14:30),02:20(2:30),Task content,#tag,comment";
     const task = Task.fromLine(line);
 
     expect(task).toBeInstanceOf(Task);
@@ -123,8 +123,8 @@ describe("fromLine", () => {
     expect(task!.duration!.plan).toEqual(moment.duration("2:30"));
   });
 
-  it("- [*] 12:05,Task content,#tag,comment", () => {
-    const line = "- [*] 12:05,Task content,#tag,comment";
+  it("- [/] 12:05,Task content,#tag,comment", () => {
+    const line = "- [/] 12:05,Task content,#tag,comment";
     const task = Task.fromLine(line);
 
     expect(task).toBeInstanceOf(Task);

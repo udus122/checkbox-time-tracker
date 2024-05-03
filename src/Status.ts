@@ -7,7 +7,7 @@ export const StatusType = {
 
 export const StatusSymbol = {
   [StatusType.TODO]: " ",
-  [StatusType.DOING]: "*",
+  [StatusType.DOING]: "/",
   [StatusType.DONE]: "x",
   [StatusType.CANCELLED]: "-",
 } as const;
