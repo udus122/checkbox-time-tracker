@@ -1,8 +1,9 @@
-import { Status } from "./Status";
-import { Notice } from "obsidian";
-import { TaskInput } from "./TaskInput";
-import { type Duration, type Moment } from "moment";
 import moment from "moment";
+
+import { Status, StatusType } from "./Status";
+import { TaskInput } from "./TaskInput";
+
+import type { Duration, Moment } from "moment";
 
 export type TaskTime = {
   fact?: Moment;
@@ -13,6 +14,7 @@ export type TaskDuration = {
   fact?: Duration;
   planed?: Duration;
 };
+
 export class Task {
   public readonly indentation: string;
   public readonly listMarker: string;
@@ -50,90 +52,106 @@ export class Task {
 
   public static fromLine(line: string): Task | undefined {
     const taskInput = TaskInput.fromLine(line);
-    const task = Task.fromTaskInput(taskInput);
-    return task;
+    return Task.fromTaskInput(taskInput);
   }
 
   static fromTaskInput(taskInput: TaskInput): Task | undefined {
-    if (taskInput.status.type === "TODO") {
-      return new Task({
-        indentation: taskInput.indentation,
-        listMarker: taskInput.listMarker,
-        status: taskInput.status,
-        content: taskInput.content,
-        start: {
-          fact:
-            !taskInput.start?.estimation && !!taskInput.start?.time
-              ? undefined
-              : taskInput.start?.time,
-          plan: taskInput.start?.estimation ?? taskInput.start?.time,
-        },
-        end: {
-          fact:
-            !taskInput.end?.estimation && !!taskInput.end?.time
-              ? undefined
-              : taskInput.end?.time,
-          plan: taskInput.end?.estimation ?? taskInput.end?.time,
-        },
-        duration: {
-          fact:
-            !taskInput.duration?.estimation && !!taskInput.duration?.time
-              ? undefined
-              : taskInput.duration?.time,
-          planed: taskInput.duration?.estimation ?? taskInput.duration?.time,
-        },
-      });
-    } else if (taskInput.status.type === "DOING") {
-      return new Task({
-        indentation: taskInput.indentation,
-        listMarker: taskInput.listMarker,
-        status: taskInput.status,
-        content: taskInput.content,
-        start: {
-          fact: taskInput.start?.time,
-          plan: taskInput.start?.estimation,
-        },
-        end: {
-          fact:
-            !taskInput.end?.estimation && !!taskInput.end?.time
-              ? undefined
-              : taskInput.end?.time,
-          plan: taskInput.end?.estimation ?? taskInput.end?.time,
-        },
-        duration: {
-          fact:
-            !taskInput.duration?.estimation && !!taskInput.duration?.time
-              ? undefined
-              : taskInput.duration?.time,
-          planed: taskInput.duration?.estimation ?? taskInput.duration?.time,
-        },
-      });
+    if (taskInput.status.type === StatusType.TODO) {
+      return Task.fromTodoInput(taskInput);
+    } else if (taskInput.status.type === StatusType.DOING) {
+      return Task.fromDoingInput(taskInput);
     } else {
-      return new Task({
-        indentation: taskInput.indentation,
-        listMarker: taskInput.listMarker,
-        status: taskInput.status,
-        content: taskInput.content,
-        start: {
-          fact: taskInput.start?.time,
-          plan: taskInput.start?.estimation,
-        },
-        end: {
-          fact: taskInput.end?.time,
-          plan: taskInput.end?.estimation,
-        },
-        duration: {
-          fact: taskInput.duration?.time,
-          planed: taskInput.duration?.estimation,
-        },
-      });
+      return Task.fromOtherInput(taskInput);
     }
+  }
+  static fromTodoInput(taskInput: TaskInput): Task {
+    if (taskInput.status.type !== StatusType.TODO) {
+      throw new Error("TaskInput is not a TODO task.");
+    }
+    // TODOタスクを読み取る際は、timeを優先的にplanに格納する(start, end, duration)
+    return new Task({
+      indentation: taskInput.indentation,
+      listMarker: taskInput.listMarker,
+      status: taskInput.status,
+      content: taskInput.content,
+      start: {
+        fact:
+          !taskInput.start?.estimation && !!taskInput.start?.time
+            ? undefined
+            : taskInput.start?.time,
+        plan: taskInput.start?.estimation ?? taskInput.start?.time,
+      },
+      end: {
+        fact:
+          !taskInput.end?.estimation && !!taskInput.end?.time
+            ? undefined
+            : taskInput.end?.time,
+        plan: taskInput.end?.estimation ?? taskInput.end?.time,
+      },
+      duration: {
+        fact:
+          !taskInput.duration?.estimation && !!taskInput.duration?.time
+            ? undefined
+            : taskInput.duration?.time,
+        planed: taskInput.duration?.estimation ?? taskInput.duration?.time,
+      },
+    });
+  }
+  static fromDoingInput(taskInput: TaskInput): Task {
+    if (taskInput.status.type !== StatusType.DOING) {
+      throw new Error("TaskInput is not a DOING task.");
+    }
+    // DOINGタスクを読み取る際は、timeを優先的にplanに格納する(end, duration)
+    return new Task({
+      indentation: taskInput.indentation,
+      listMarker: taskInput.listMarker,
+      status: taskInput.status,
+      content: taskInput.content,
+      start: {
+        fact: taskInput.start?.time,
+        plan: taskInput.start?.estimation,
+      },
+      end: {
+        fact:
+          !taskInput.end?.estimation && !!taskInput.end?.time
+            ? undefined
+            : taskInput.end?.time,
+        plan: taskInput.end?.estimation ?? taskInput.end?.time,
+      },
+      duration: {
+        fact:
+          !taskInput.duration?.estimation && !!taskInput.duration?.time
+            ? undefined
+            : taskInput.duration?.time,
+        planed: taskInput.duration?.estimation ?? taskInput.duration?.time,
+      },
+    });
+  }
+  static fromOtherInput(taskInput: TaskInput): Task {
+    // その他の場合は、timeをfactに、estimationをplanに格納する
+    return new Task({
+      indentation: taskInput.indentation,
+      listMarker: taskInput.listMarker,
+      status: taskInput.status,
+      content: taskInput.content,
+      start: {
+        fact: taskInput.start?.time,
+        plan: taskInput.start?.estimation,
+      },
+      end: {
+        fact: taskInput.end?.time,
+        plan: taskInput.end?.estimation,
+      },
+      duration: {
+        fact: taskInput.duration?.time,
+        planed: taskInput.duration?.estimation,
+      },
+    });
   }
 
   public cancel(): Task {
     if (this.status.type === "DONE") {
-      new Notice("Cannot cancel a task already done.");
-      return this;
+      throw new Error("Cannot cancel a task already done.");
     }
     return new Task({
       ...this,
@@ -145,8 +163,7 @@ export class Task {
     if (isCancell) {
       return this.cancel();
     }
-
-    if (this.status.type === "TODO") {
+    if (this.status.type === StatusType.TODO) {
       return new Task({
         ...this,
         status: this.status.nextStatus(),
@@ -155,7 +172,7 @@ export class Task {
           fact: this.start?.fact ?? moment(),
         },
       });
-    } else if (this.status.type === "DOING") {
+    } else if (this.status.type === StatusType.DOING) {
       return new Task({
         ...this,
         status: this.status.nextStatus(),
@@ -164,8 +181,13 @@ export class Task {
           fact: this.end?.fact ?? moment(),
         },
       });
+    } else {
+      // Toggle the status of the task to the next status and return the new task.
+      return new Task({
         ...this,
         status: this.status.nextStatus(),
+      });
+    }
   }
 
   public toString(): string {
