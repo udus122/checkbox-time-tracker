@@ -1,7 +1,7 @@
 {
   "id": "csv-task-tracker",
   "name": "CSV Task Tracker",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "minAppVersion": "0.15.0",
   "description": "CSV Task Tracker for Obsidian",
   "author": "UD",
