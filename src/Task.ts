@@ -163,10 +163,6 @@ export class Task {
           ...this.end,
           fact: this.end?.fact ?? moment(),
         },
-        duration: {
-          ...this.duration,
-          fact: moment.duration(this.end?.fact?.diff(this.start?.fact)),
-        },
       });
     }
 
