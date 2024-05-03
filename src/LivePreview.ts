@@ -38,7 +38,7 @@ class LivePreviewExtension implements PluginValue {
     const task = Task.fromLine(line.text);
 
     // Only handle checkboxes of tasks.
-    if (task === null) {
+    if (!task) {
       return false;
     }
 
