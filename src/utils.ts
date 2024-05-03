@@ -1,5 +1,6 @@
-import type { Duration, Moment } from "moment";
 import moment from "moment";
+
+import type { Duration, Moment } from "moment";
 
 export function parseTime(time: string): Moment {
   const timeParsed = moment(time, "HH:mm");

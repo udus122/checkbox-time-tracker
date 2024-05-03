@@ -1,5 +1,6 @@
-import { parseDuration, parseTime } from "./utils";
 import moment from "moment";
+
+import { parseDuration, parseTime } from "./utils";
 
 describe("parseTime", () => {
   it("12:30 (valid)", () => {

@@ -1,18 +1,16 @@
 import { newLivePreviewExtension } from "./LivePreview";
 import { Plugin } from "obsidian";
 
-// Remember to rename these classes and interfaces!
-
-interface TascChuteObsidianSettings {
+interface Settings {
   mySetting: string;
 }
 
-const DEFAULT_SETTINGS: TascChuteObsidianSettings = {
+const DEFAULT_SETTINGS: Settings = {
   mySetting: "default",
 };
 
-export default class TascChuteObsidian extends Plugin {
-  settings: TascChuteObsidianSettings;
+export default class CSVTaskTracker extends Plugin {
+  settings: Settings;
 
   async onload() {
     await this.loadSettings();
