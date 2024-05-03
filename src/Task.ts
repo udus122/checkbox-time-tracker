@@ -159,7 +159,7 @@ export class Task {
     });
   }
 
-  public toggle(isCancell: boolean): Task {
+  public toggle(isCancell: boolean = false): Task {
     if (isCancell) {
       return this.cancel();
     }
