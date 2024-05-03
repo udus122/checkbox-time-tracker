@@ -1,7 +1,7 @@
 {
-  "name": "task-chute-obsidian",
+  "name": "csv-task-tracker",
   "version": "0.1.0",
-  "description": "TaskChute Utility for Obsidian",
+  "description": "CSV Task Tracker for Obsidian",
   "main": "main.js",
   "scripts": {
     "dev": "node esbuild.config.mjs",

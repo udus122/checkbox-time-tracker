@@ -1,9 +1,9 @@
 {
-  "id": "task-chute-obsidian",
-  "name": "TaskChute Obsidian",
+  "id": "csv-task-tracker",
+  "name": "CSV Task Tracker",
   "version": "1.0.0",
   "minAppVersion": "0.15.0",
-  "description": "TaskChute Utility for Obsidian",
+  "description": "CSV Task Tracker for Obsidian",
   "author": "UD",
   "authorUrl": "https://notes.udus.dev",
   "fundingUrl": "",
