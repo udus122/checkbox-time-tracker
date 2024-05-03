@@ -106,13 +106,13 @@ describe("parseTime", () => {
   it("不正な文字列1", () => {
     const time = "12:00 12:00";
     const result = TaskInput.parseTaskTimeInput(time);
-    expect(result).toBeNull();
+    expect(result).toBeUndefined();
   });
 
   it("不正な文字列2", () => {
     const time = "全く関係ない文字列";
     const result = TaskInput.parseTaskTimeInput(time);
-    expect(result).toBeNull();
+    expect(result).toBeUndefined();
   });
 });
 
@@ -551,7 +551,7 @@ describe("parseTask", () => {
       time: moment("14:30", "HH:mm"),
       estimation: undefined,
     });
-    expect(result.duration).toEqual(null);
+    expect(result.duration).toBeUndefined();
     expect(result.content).toEqual("タイトル");
   });
 
@@ -566,7 +566,7 @@ describe("parseTask", () => {
       time: undefined,
       estimation: moment("14:30", "HH:mm"),
     });
-    expect(result.duration).toEqual(null);
+    expect(result.duration).toBeUndefined();
     expect(result.content).toEqual("タイトル");
   });
 
@@ -581,7 +581,7 @@ describe("parseTask", () => {
       time: moment("14:25", "HH:mm"),
       estimation: moment("14:30", "HH:mm"),
     });
-    expect(result.duration).toEqual(null);
+    expect(result.duration).toBeUndefined();
     expect(result.content).toEqual("タイトル");
   });
 
@@ -596,7 +596,7 @@ describe("parseTask", () => {
       time: moment("14:25", "HH:mm"),
       estimation: undefined,
     });
-    expect(result.duration).toEqual(null);
+    expect(result.duration).toBeUndefined();
     expect(result.content).toEqual(
       "タイトル,タグ(オプショナル),メモ(オプショナル)"
     );
@@ -613,7 +613,7 @@ describe("parseTask", () => {
       time: undefined,
       estimation: moment("14:30", "HH:mm"),
     });
-    expect(result.duration).toEqual(null);
+    expect(result.duration).toBeUndefined();
     expect(result.content).toEqual(
       "タイトル,タグ(オプショナル),メモ(オプショナル)"
     );
@@ -630,7 +630,7 @@ describe("parseTask", () => {
       time: moment("14:25", "HH:mm"),
       estimation: moment("14:30", "HH:mm"),
     });
-    expect(result.duration).toEqual(null);
+    expect(result.duration).toBeUndefined();
     expect(result.content).toEqual(
       "タイトル,タグ(オプショナル),メモ(オプショナル)"
     );
@@ -643,8 +643,8 @@ describe("parseTask", () => {
       time: moment("12:05", "HH:mm"),
       estimation: undefined,
     });
-    expect(result.end).toEqual(null);
-    expect(result.duration).toEqual(null);
+    expect(result.end).toBeUndefined();
+    expect(result.duration).toBeUndefined();
     expect(result.content).toEqual(
       "タイトル,タグ(オプショナル),メモ(オプショナル)"
     );
@@ -657,8 +657,8 @@ describe("parseTask", () => {
       time: undefined,
       estimation: moment("12:00", "HH:mm"),
     });
-    expect(result.end).toEqual(null);
-    expect(result.duration).toEqual(null);
+    expect(result.end).toBeUndefined();
+    expect(result.duration).toBeUndefined();
     expect(result.content).toEqual(
       "タイトル,タグ(オプショナル),メモ(オプショナル)"
     );
@@ -671,8 +671,8 @@ describe("parseTask", () => {
       time: moment("12:05", "HH:mm"),
       estimation: moment("12:00", "HH:mm"),
     });
-    expect(result.end).toEqual(null);
-    expect(result.duration).toEqual(null);
+    expect(result.end).toBeUndefined();
+    expect(result.duration).toBeUndefined();
     expect(result.content).toEqual(
       "タイトル,タグ(オプショナル),メモ(オプショナル)"
     );
@@ -681,9 +681,9 @@ describe("parseTask", () => {
   it("(0列) タイトル", () => {
     const body = "タスクのタイトル,タグ(オプショナル),メモ(オプショナル)";
     const result = TaskInput.parseCheckboxBody(body);
-    expect(result.start).toEqual(null);
-    expect(result.end).toEqual(null);
-    expect(result.duration).toEqual(null);
+    expect(result.start).toBeUndefined();
+    expect(result.end).toBeUndefined();
+    expect(result.duration).toBeUndefined();
     expect(result.content).toEqual(
       "タスクのタイトル,タグ(オプショナル),メモ(オプショナル)"
     );

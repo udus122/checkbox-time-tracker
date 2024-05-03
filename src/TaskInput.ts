@@ -38,9 +38,9 @@ export class TaskInput {
   public readonly listMarker: string;
   public readonly statusSymbol: string;
   public readonly status: Status;
-  public readonly start: TimeInput | null;
-  public readonly end: TimeInput | null;
-  public readonly duration: DurationInput | null;
+  public readonly start?: TimeInput;
+  public readonly end?: TimeInput;
+  public readonly duration?: DurationInput;
   public readonly content: string;
 
   constructor({
@@ -57,9 +57,9 @@ export class TaskInput {
     listMarker: string;
     statusSymbol: string;
     status: Status;
-    start: TimeInput | null;
-    end: TimeInput | null;
-    duration: DurationInput | null;
+    start?: TimeInput;
+    end?: TimeInput;
+    duration?: DurationInput;
     content: string;
   }) {
     this.indentation = indentation;
@@ -137,60 +137,60 @@ export class TaskInput {
   }
 
   static parseCheckboxBody(body: string): {
-    start: TimeInput | null;
-    end: TimeInput | null;
-    duration: DurationInput | null;
+    start?: TimeInput;
+    end?: TimeInput;
+    duration?: DurationInput;
     content: string;
   } {
     const bodyArray = body.split(",");
 
     const startInput = TaskInput.parseTaskTimeInput(bodyArray[0]);
-    if (startInput === null) {
+    if (!startInput) {
       return {
-        start: null,
-        end: null,
-        duration: null,
+        start: undefined,
+        end: undefined,
+        duration: undefined,
         content: bodyArray.join(","),
       };
     }
 
     const start = {
-      time: startInput.time ? parseTime(startInput.time) : undefined,
-      estimation: startInput.estimation
+      time: startInput?.time ? parseTime(startInput.time) : undefined,
+      estimation: startInput?.estimation
         ? parseTime(startInput.estimation)
         : undefined,
     };
 
     const endInput = TaskInput.parseTaskTimeInput(bodyArray[1]);
-    if (endInput === null) {
+    if (!endInput) {
       return {
         start,
-        end: null,
-        duration: null,
+        end: undefined,
+        duration: undefined,
         content: bodyArray.slice(1).join(","),
       };
     }
 
     const end = {
-      time: endInput.time ? parseTime(endInput.time) : undefined,
-      estimation: endInput.estimation
+      time: endInput?.time ? parseTime(endInput.time) : undefined,
+      estimation: endInput?.estimation
         ? parseTime(endInput.estimation)
         : undefined,
     };
 
     const durationInput = TaskInput.parseTaskTimeInput(bodyArray[2]);
-    if (durationInput === null) {
+    if (!durationInput) {
       return {
         start,
         end,
-        duration: null,
+        duration: undefined,
         content: bodyArray.slice(2).join(","),
       };
     }
 
     const duration = {
-      time: durationInput.time ? parseDuration(durationInput.time) : undefined,
-      estimation: durationInput.estimation
+      time: durationInput?.time ? parseDuration(durationInput.time) : undefined,
+      estimation: durationInput?.estimation
         ? parseDuration(durationInput.estimation)
         : undefined,
     };
@@ -214,14 +214,14 @@ export class TaskInput {
    **/
   static parseTaskTimeInput(
     timeString: string
-  ): { time?: string; estimation?: string } | null {
+  ): { time?: string; estimation?: string } | undefined {
     const TIME_REGEX =
       /^\s*(?<time>\d{1,2}:\d{1,2})?\s*(?:\s*\(\s*(?<estimation>\d{1,2}:\d{1,2})\s*\)\s*)?$/;
 
     const match = timeString.match(TIME_REGEX);
 
     if (match === null) {
-      return null;
+      return undefined;
     }
 
     return {
