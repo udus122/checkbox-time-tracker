@@ -1,5 +1,7 @@
-import { newLivePreviewExtension } from "./LivePreview";
 import { Plugin } from "obsidian";
+
+import { newLivePreviewExtension } from "./LivePreview";
+import { createCommands } from "./commands";
 
 interface Settings {
   mySetting: string;
@@ -15,6 +17,10 @@ export default class CSVTaskTracker extends Plugin {
   async onload() {
     await this.loadSettings();
     this.registerEditorExtension(newLivePreviewExtension());
+
+    createCommands().forEach((command) => {
+      this.addCommand(command);
+    });
   }
 
   onunload() {}
