@@ -12,7 +12,7 @@ export type TaskTime = {
 
 export type TaskDuration = {
   fact?: Duration;
-  planed?: Duration;
+  plan?: Duration;
 };
 
 export class Task {
@@ -25,16 +25,16 @@ export class Task {
   public readonly duration?: TaskDuration;
 
   constructor({
-    indentation,
-    listMarker,
-    status,
+    indentation = "",
+    listMarker = "-",
+    status = Status.makeTodo(),
     start,
     end,
     duration,
     content,
   }: {
-    indentation: string;
-    listMarker: string;
+    indentation?: string;
+    listMarker?: string;
     status: Status;
     start?: TaskTime;
     end?: TaskTime;
@@ -93,7 +93,7 @@ export class Task {
           !taskInput.duration?.estimation && !!taskInput.duration?.time
             ? undefined
             : taskInput.duration?.time,
-        planed: taskInput.duration?.estimation ?? taskInput.duration?.time,
+        plan: taskInput.duration?.estimation ?? taskInput.duration?.time,
       },
     });
   }
@@ -123,7 +123,7 @@ export class Task {
           !taskInput.duration?.estimation && !!taskInput.duration?.time
             ? undefined
             : taskInput.duration?.time,
-        planed: taskInput.duration?.estimation ?? taskInput.duration?.time,
+        plan: taskInput.duration?.estimation ?? taskInput.duration?.time,
       },
     });
   }
@@ -144,7 +144,7 @@ export class Task {
       },
       duration: {
         fact: taskInput.duration?.time,
-        planed: taskInput.duration?.estimation,
+        plan: taskInput.duration?.estimation,
       },
     });
   }
@@ -203,8 +203,8 @@ export class Task {
         ? `${this.duration.fact.hours()}:${this.duration?.fact?.minutes()}`
         : ""
     }${
-      this.duration?.planed
-        ? `(${this.duration.planed.hours()}:${this.duration?.planed?.minutes()})`
+      this.duration?.plan
+        ? `(${this.duration.plan.hours()}:${this.duration?.plan?.minutes()})`
         : ""
     }`;
     return `${checkbox} ${start},${end},${duration},${this.content}`;
