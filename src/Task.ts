@@ -48,9 +48,9 @@ export class Task {
   }
 
   public static fromLine(line: string): Task | null {
-    const taskComponents = TaskInput.fromLine(line);
+    const taskInput = TaskInput.fromLine(line);
 
-    const task = Task.fromTaskInput(taskComponents);
+    const task = Task.fromTaskInput(taskInput);
 
     if (task === null) {
       return null;
@@ -73,7 +73,7 @@ export class Task {
 
   public cancel(): Task {
     if (this.status.type === "DONE") {
-      new Notice("Cannot cancel a task that is already done.");
+      new Notice("Cannot cancel a task already done.");
       return this;
     }
     return new Task({
@@ -99,7 +99,6 @@ export class Task {
   }
 
   public toString(): string {
-    // debugger;
     return `${this.indentation}${this.listMarker} [${this.status.symbol}] ${this.body}`;
   }
 }
