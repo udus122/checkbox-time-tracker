@@ -61,6 +61,9 @@ export class Status {
         throw new Error(`Unknown status symbol: ${symbol}`);
     }
   }
+  public nextStatus(): Status {
+    return Status.fromType(this.nextStatusType);
+  }
 
   static makeTodo(): Status {
     return new Status(

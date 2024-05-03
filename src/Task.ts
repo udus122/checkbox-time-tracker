@@ -149,7 +149,7 @@ export class Task {
     if (this.status.type === "TODO") {
       return new Task({
         ...this,
-        status: Status.fromType(this.status.nextStatusType),
+        status: this.status.nextStatus(),
         start: {
           ...this.start,
           fact: this.start?.fact ?? moment(),
@@ -158,23 +158,14 @@ export class Task {
     } else if (this.status.type === "DOING") {
       return new Task({
         ...this,
-        status: Status.fromType(this.status.nextStatusType),
+        status: this.status.nextStatus(),
         end: {
           ...this.end,
           fact: this.end?.fact ?? moment(),
         },
       });
-    }
-
-    // Toggle the status of the task to the next status and return the new task.
-    return new Task({
-      ...this,
-      status: Status.fromType(this.status.nextStatusType),
-    });
-  }
-
-  public computeDuration(): number {
-    throw new Error("Not implemented");
+        ...this,
+        status: this.status.nextStatus(),
   }
 
   public toString(): string {
