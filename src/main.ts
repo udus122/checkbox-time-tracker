@@ -11,7 +11,7 @@ const DEFAULT_SETTINGS: Settings = {
   mySetting: "default",
 };
 
-export default class CSVTaskTracker extends Plugin {
+export default class Main extends Plugin {
   settings: Settings;
 
   async onload() {

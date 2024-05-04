@@ -1,7 +1,7 @@
 {
-  "name": "csv-task-tracker",
+  "name": "checkbox-time-tracker",
   "version": "1.0.0",
-  "description": "CSV Task Tracker for Obsidian",
+  "description": "Obsidian plugin for convenient time tracking using checkbox",
   "main": "main.js",
   "scripts": {
     "dev": "node esbuild.config.mjs",
