@@ -1,9 +1,9 @@
 {
-  "id": "csv-task-tracker",
-  "name": "CSV Task Tracker",
-  "version": "0.2.0",
+  "id": "checkbox-time-tracker",
+  "name": "Checkbox Time Tracker",
+  "version": "0.4.0",
   "minAppVersion": "0.15.0",
-  "description": "CSV Task Tracker for Obsidian",
+  "description": "Obsidian plugin for convenient time tracking using checkbox",
   "author": "UD",
   "authorUrl": "https://notes.udus.dev",
   "fundingUrl": "",
