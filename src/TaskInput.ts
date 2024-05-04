@@ -34,6 +34,15 @@ export class TaskInput {
     "u"
   );
 
+  /**
+   * Match below patterns:
+   * - "HH:mm": actual or estimated time
+   * - "(HH:mm)": estimatated time
+   * - "HH:mm(HH:mm)": actual and estimated time
+   * - "": Empty String: neither actual nor estimated time */
+  static readonly TIME_REGEX =
+    /^\s*(?<time>\d{1,2}:\d{1,2})?\s*(?:\s*\(\s*(?<estimation>\d{1,2}:\d{1,2})\s*\)\s*)?$/;
+
   public readonly indentation: string;
   public readonly listMarker: string;
   public readonly statusSymbol: string;
@@ -215,10 +224,7 @@ export class TaskInput {
   static parseTaskTimeInput(
     timeString: string
   ): { time?: string; estimation?: string } | undefined {
-    const TIME_REGEX =
-      /^\s*(?<time>\d{1,2}:\d{1,2})?\s*(?:\s*\(\s*(?<estimation>\d{1,2}:\d{1,2})\s*\)\s*)?$/;
-
-    const match = timeString.match(TIME_REGEX);
+    const match = timeString.match(TaskInput.TIME_REGEX);
 
     if (match === null) {
       return undefined;
