@@ -27,7 +27,7 @@ export class Task {
   constructor({
     indentation = "",
     listMarker = "-",
-    status = Status.makeTodo(),
+    status = Status.Todo(),
     start,
     end,
     duration,
@@ -158,35 +158,70 @@ export class Task {
       status: Status.makeCancelled(),
     });
   }
+  /**
+   * タスクを開始する
+   * @returns ステータスがDOINGで、開始時刻の実績が入ったTask
+   */
+  public begin(time?: Moment): Task {
+    return new Task({
+      ...this,
+      status: Status.Doing(),
+      start: {
+        ...this.start,
+        fact: this.start?.fact ?? time ?? moment(),
+      },
+    });
+  }
 
-  public toggle(isCancell: boolean = false): Task {
+  /**
+   * タスクを終了する
+   * @returns ステータスがDONEで、終了時刻の実績が入ったTask
+   */
+  public finish(time?: Moment): Task {
+    return new Task({
+      ...this,
+      status: Status.Done(),
+      end: {
+        ...this.end,
+        fact: this.end?.fact ?? time ?? moment(),
+      },
+    });
+  }
+
+  public nextStatus(start_time?: Moment, end_time?: Moment): Task {
+    return new Task({
+      ...this,
+      status: this.status.nextStatus(),
+      start: {
+        ...this.start,
+        fact: this.end?.fact ?? start_time,
+      },
+      end: {
+        ...this.end,
+        fact: this.end?.fact ?? end_time,
+      },
+    });
+  }
+
+  public toggle({
+    start_time,
+    end_time,
+    isCancell = false,
+  }: {
+    start_time?: Moment;
+    end_time?: Moment;
+    isCancell?: boolean;
+  }): Task {
     if (isCancell) {
       return this.cancel();
     }
+
     if (this.status.type === StatusType.TODO) {
-      return new Task({
-        ...this,
-        status: this.status.nextStatus(),
-        start: {
-          ...this.start,
-          fact: this.start?.fact ?? moment(),
-        },
-      });
+      return this.begin(start_time);
     } else if (this.status.type === StatusType.DOING) {
-      return new Task({
-        ...this,
-        status: this.status.nextStatus(),
-        end: {
-          ...this.end,
-          fact: this.end?.fact ?? moment(),
-        },
-      });
+      return this.finish(end_time);
     } else {
-      // Toggle the status of the task to the next status and return the new task.
-      return new Task({
-        ...this,
-        status: this.status.nextStatus(),
-      });
+      return this.nextStatus(start_time, end_time);
     }
   }
 

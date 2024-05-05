@@ -35,11 +35,11 @@ export class Status {
   static fromType(type: StatusType): Status {
     switch (type) {
       case StatusType.TODO:
-        return Status.makeTodo();
+        return Status.Todo();
       case StatusType.DOING:
-        return Status.makeDoing();
+        return Status.Doing();
       case StatusType.DONE:
-        return Status.makeDone();
+        return Status.Done();
       case StatusType.CANCELLED:
         return Status.makeCancelled();
       default:
@@ -50,11 +50,11 @@ export class Status {
   static fromSymbol(symbol: string): Status {
     switch (symbol) {
       case StatusSymbol.TODO:
-        return Status.makeTodo();
+        return Status.Todo();
       case StatusSymbol.DOING:
-        return Status.makeDoing();
+        return Status.Doing();
       case StatusSymbol.DONE:
-        return Status.makeDone();
+        return Status.Done();
       case StatusSymbol.CANCELLED:
         return Status.makeCancelled();
       default:
@@ -65,7 +65,7 @@ export class Status {
     return Status.fromType(this.nextStatusType);
   }
 
-  static makeTodo(): Status {
+  static Todo(): Status {
     return new Status(
       StatusSymbol.TODO,
       "Todo",
@@ -74,7 +74,7 @@ export class Status {
     );
   }
 
-  static makeDoing(): Status {
+  static Doing(): Status {
     return new Status(
       StatusSymbol.DOING,
       "Doing",
@@ -83,7 +83,7 @@ export class Status {
     );
   }
 
-  static makeDone(): Status {
+  static Done(): Status {
     return new Status(
       StatusSymbol.DONE,
       "Done",

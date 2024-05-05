@@ -41,7 +41,7 @@ describe("parseCheckboxComponents", () => {
     expect(indentation).toBe("");
     expect(listMarker).toBe("-");
     expect(statusSymbol).toBe("x");
-    expect(status).toEqual(Status.makeDone());
+    expect(status).toEqual(Status.Done());
     expect(body).toBe("Task");
   });
 
@@ -52,7 +52,7 @@ describe("parseCheckboxComponents", () => {
     expect(indentation).toBe("");
     expect(listMarker).toBe("-");
     expect(statusSymbol).toBe(" ");
-    expect(status).toEqual(Status.makeTodo());
+    expect(status).toEqual(Status.Todo());
     expect(body).toBe("Task");
   });
 

@@ -10,7 +10,7 @@ describe("Checkbox", () => {
       expect(checkbox.indentation).toBe("  ");
       expect(checkbox.listMarker).toBe("-");
       expect(checkbox.statusSymbol).toBe("x");
-      expect(checkbox.status).toEqual(Status.makeDone());
+      expect(checkbox.status).toEqual(Status.Done());
       expect(checkbox.body).toBe("Example task");
     });
     const testCase2 = "This is not a valid task";

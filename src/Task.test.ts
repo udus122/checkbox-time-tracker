@@ -11,8 +11,8 @@ describe("Task", () => {
       const taskInput = new TaskInput({
         indentation: "  ",
         listMarker: "-",
-        statusSymbol: Status.makeTodo().symbol,
-        status: Status.makeTodo(),
+        statusSymbol: Status.Todo().symbol,
+        status: Status.Todo(),
         content: "Task content",
         start: {
           time: moment("2022-01-01 10:00"),
@@ -186,11 +186,11 @@ describe("fromLine", () => {
 describe("toggle", () => {
   it("should toggle the status of a TODO task and update the start time if not provided", () => {
     const task = new Task({
-      status: Status.makeTodo(),
+      status: Status.Todo(),
       content: "Task content",
     });
 
-    const toggledTask = task.toggle(false);
+    const toggledTask = task.toggle({ isCancell: false });
 
     expect(toggledTask.status.type).toBe(StatusType.DOING);
     expect(toggledTask.start?.fact).toBeDefined();
@@ -199,11 +199,11 @@ describe("toggle", () => {
 
   it("should toggle the status of a DOING task and update the end time if not provided", () => {
     const task = new Task({
-      status: Status.makeDoing(),
+      status: Status.Doing(),
       content: "Task content",
     });
 
-    const toggledTask = task.toggle(false);
+    const toggledTask = task.toggle({ isCancell: false });
 
     expect(toggledTask.status.type).toBe(StatusType.DONE);
     expect(toggledTask.end?.fact).toBeDefined();
@@ -212,11 +212,11 @@ describe("toggle", () => {
 
   it("should cancel a task if isCancell is true", () => {
     const task = new Task({
-      status: Status.makeTodo(),
+      status: Status.Todo(),
       content: "Task content",
     });
 
-    const cancelledTask = task.toggle(true);
+    const cancelledTask = task.toggle({ isCancell: true });
 
     expect(cancelledTask.status.type).toBe(StatusType.CANCELLED);
   });
@@ -225,7 +225,7 @@ describe("toggle", () => {
 describe("toString", () => {
   it("All properties", () => {
     const task = new Task({
-      status: Status.makeTodo(),
+      status: Status.Todo(),
       content: "Task content",
       start: {
         fact: moment("10:00", "HH:mm"),
@@ -248,7 +248,7 @@ describe("toString", () => {
 
   it("No properties", () => {
     const task = new Task({
-      status: Status.makeTodo(),
+      status: Status.Todo(),
       content: "Task content",
     });
 
