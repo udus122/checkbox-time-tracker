@@ -6,6 +6,14 @@ export function createCommands(): Command[] {
     {
       id: "cycle-task-status",
       name: "Cycle task status",
+      hotkeys: [
+        // cmd + shift + l
+        {
+          modifiers: ["Mod", "Shift"],
+          key: "L",
+        },
+      ],
+      icon: "circle-check-big",
       editorCallback: (editor: Editor) => {
         const { line, ch } = editor.getCursor();
 
