@@ -47,7 +47,7 @@ export class Task {
       /\s*-?\s*/.source + // separator(-)
       /(?:(?<end>(?<=\s*-\s*)\d{1,2}:\d{1,2}))?/.source + // capture end time (HH:mm)
       /\s*/.source + // whitespaces
-      /(?<taskBody>.*)/.source //capture task body
+      /,?(?<taskBody>.*)/.source //capture task body
   );
 
   public readonly indentation: string;
@@ -210,7 +210,7 @@ export class Task {
     const start = this.start?.format("HH:mm") ?? "";
     const startEndSeparator = this.start && this.end ? "-" : "";
     const end = this.end?.format("HH:mm") ?? "";
-    const bodySeparator = this.start || this.end ? " " : "";
+    const bodySeparator = this.start || this.end ? "," : "";
     return (
       `${this.indentation}${this.listMarker} [${this.status.symbol}] ` +
       `${start}${startEndSeparator}${end}` +
