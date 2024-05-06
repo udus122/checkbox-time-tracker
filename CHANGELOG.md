@@ -1,5 +1,8 @@
 # Changelog
 
+## [0.5.7](https://github.com/udus122/checkbox-time-tracker/compare/0.5.6...0.5.7) - 2024-05-06
+- ドラフトを経由せずにリリースする by @udus122 in https://github.com/udus122/checkbox-time-tracker/pull/20
+
 ## [0.5.6](https://github.com/udus122/checkbox-time-tracker/compare/0.5.5...0.5.6) - 2024-05-06
 - fix: get latest tag by @udus122 in https://github.com/udus122/checkbox-time-tracker/pull/18
 
