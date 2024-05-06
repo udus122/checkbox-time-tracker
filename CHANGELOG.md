@@ -1,5 +1,8 @@
 # Changelog
 
+## [0.5.9](https://github.com/udus122/checkbox-time-tracker/compare/0.5.8...0.5.9) - 2024-05-06
+- Iconをデフォルトで利用可能なものに変更する by @udus122 in https://github.com/udus122/checkbox-time-tracker/pull/24
+
 ## [0.5.8](https://github.com/udus122/checkbox-time-tracker/compare/0.5.7...0.5.8) - 2024-05-06
 - feat: add icon and default hotkey by @udus122 in https://github.com/udus122/checkbox-time-tracker/pull/22
 
