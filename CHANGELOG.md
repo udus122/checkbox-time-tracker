@@ -1,5 +1,8 @@
 # Changelog
 
+## [0.5.6](https://github.com/udus122/checkbox-time-tracker/compare/0.5.5...0.5.6) - 2024-05-06
+- fix: get latest tag by @udus122 in https://github.com/udus122/checkbox-time-tracker/pull/18
+
 ## [0.5.5](https://github.com/udus122/checkbox-time-tracker/compare/0.5.4...0.5.5) - 2024-05-06
 - fix: get latest tag by @udus122 in https://github.com/udus122/checkbox-time-tracker/pull/16
 
