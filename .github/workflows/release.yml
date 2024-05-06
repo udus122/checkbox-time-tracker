@@ -6,12 +6,14 @@ on:
       - "*"
   pull_request:
     branches:
-      - tagpr-from-**
+      - main
     types: [closed]
 
 jobs:
   build:
-    if: github.event.pull_request.merged == true
+    if: >-
+      github.event.pull_request.merged == true 
+      && startsWith(github.event.pull_request.head.ref, 'tagpr-from')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
