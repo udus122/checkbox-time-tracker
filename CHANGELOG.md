@@ -1,5 +1,8 @@
 # Changelog
 
+## [0.5.2](https://github.com/udus122/checkbox-time-tracker/compare/0.5.1...0.5.2) - 2024-05-06
+- 動作確認 by @udus122 in https://github.com/udus122/checkbox-time-tracker/pull/10
+
 ## [0.5.1](https://github.com/udus122/checkbox-time-tracker/compare/0.5.0...0.5.1) - 2024-05-06
 - chore: use PAT instead of GITHUB_TOKEN by @udus122 in https://github.com/udus122/checkbox-time-tracker/pull/8
 
