@@ -41,7 +41,7 @@ export class Status {
       case StatusType.DONE:
         return Status.Done();
       case StatusType.CANCELLED:
-        return Status.makeCancelled();
+        return Status.Cancelled();
       default:
         throw new Error(`Unknown status type: ${type}`);
     }
@@ -56,7 +56,7 @@ export class Status {
       case StatusSymbol.DONE:
         return Status.Done();
       case StatusSymbol.CANCELLED:
-        return Status.makeCancelled();
+        return Status.Cancelled();
       default:
         throw new Error(`Unknown status symbol: ${symbol}`);
     }
@@ -92,7 +92,7 @@ export class Status {
     );
   }
 
-  static makeCancelled(): Status {
+  static Cancelled(): Status {
     return new Status(
       StatusSymbol.CANCELLED,
       "Cancelled",

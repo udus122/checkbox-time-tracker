@@ -86,4 +86,8 @@ export class Checkbox {
 
     return { indentation, listMarker, statusSymbol, body };
   }
+
+  public toString(): string {
+    return `${this.indentation}${this.listMarker} [${this.statusSymbol}] ${this.body}`;
+  }
 }
