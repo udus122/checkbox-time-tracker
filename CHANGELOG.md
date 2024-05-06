@@ -1,5 +1,8 @@
 # Changelog
 
+## [0.5.4](https://github.com/udus122/checkbox-time-tracker/compare/0.5.3...0.5.4) - 2024-05-06
+- fix: condtion by @udus122 in https://github.com/udus122/checkbox-time-tracker/pull/14
+
 ## [0.5.3](https://github.com/udus122/checkbox-time-tracker/compare/0.5.2...0.5.3) - 2024-05-06
 - fix: add condtion by @udus122 in https://github.com/udus122/checkbox-time-tracker/pull/12
 
