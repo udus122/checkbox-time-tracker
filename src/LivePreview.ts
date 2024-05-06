@@ -21,7 +21,7 @@ class LivePreviewExtension implements PluginValue {
   }
 
   private handleClickEvent(event: MouseEvent): boolean {
-    const { target, shiftKey } = event;
+    const { target } = event;
 
     // Only handle checkbox clicks.
     if (
@@ -47,7 +47,7 @@ class LivePreviewExtension implements PluginValue {
 
     // Clicked on a task's checkbox. Toggle the task and set it.
     // Shift-click to cancel a task.
-    const toggled = task.toggle(shiftKey);
+    const toggled = task.toggle();
 
     // Creates a CodeMirror transaction in order to update the document.
     const transaction = state.update({

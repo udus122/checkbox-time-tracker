@@ -1,212 +1,221 @@
 import moment from "moment";
 
 import { Status, StatusType } from "./Status";
-import { TaskInput } from "./TaskInput";
 
-import type { Duration, Moment } from "moment";
-
-export type TaskTime = {
-  fact?: Moment;
-  plan?: Moment;
-};
-
-export type TaskDuration = {
-  fact?: Duration;
-  plan?: Duration;
-};
+import type { Moment } from "moment";
+import { parseTime } from "./utils";
 
 export class Task {
+  /** Match the indentation at the beginning of a line */
+  static readonly INDENTATION_REGEX = /^(?<indentation>[\s\t]*)/;
+
+  /** Matches - * and + list markers, or numbered list markers (eg 1.) */
+  static readonly LIST_MARKER_REGEX = /(?<listMarker>[-*+])/;
+
+  /** Matches a checkbox and saves the status character inside */
+  static readonly CHECKBOX_MARKER_REGEX = /\[(?<statusSymbol>.)\]/u;
+
+  /** Matches the rest of the task after the checkbox. */
+  static readonly CHECKBOX_BODY_REGEX = / *(?<body>.*)/u;
+
+  /**
+   * Main regex for parsing a line. It matches the following:
+   * - Indentation
+   * - List marker
+   * - Status character
+   * - Body(Rest of task after checkbox markdown)
+   */
+  static readonly CHECKBOX_REGEX = new RegExp(
+    Task.INDENTATION_REGEX.source +
+      Task.LIST_MARKER_REGEX.source +
+      " +" +
+      Task.CHECKBOX_MARKER_REGEX.source +
+      Task.CHECKBOX_BODY_REGEX.source,
+    "u"
+  );
+
+  /**
+   * Regular expression pattern for matching time values in the format HH:mm.
+   * The pattern captures the start time and end time as named groups.
+   * ex.
+   * - "10:00 task content -> {start: 10:00, body: "task content"}"
+   * - "10:00-12:00 task content" -> {start: 10:00, end: 12:00, body: "task content"}
+   */
+  static readonly TIME_REGEX = new RegExp(
+    /^/.source + // beginning of line
+      /(?:(?<start>\d{1,2}:\d{1,2}))?/.source + // capture start time (HH:mm)
+      /\s*-?\s*/.source + // separator(-)
+      /(?:(?<end>(?<=\s*-\s*)\d{1,2}:\d{1,2}))?/.source + // capture end time (HH:mm)
+      /\s*/.source + // whitespaces
+      /,?(?<taskBody>.*)/.source //capture task body
+  );
+
   public readonly indentation: string;
   public readonly listMarker: string;
+  public readonly statusSymbol: string;
+  public readonly checkboxBody: string;
+
   public readonly status: Status;
-  public readonly content: string;
-  public readonly start?: TaskTime;
-  public readonly end?: TaskTime;
-  public readonly duration?: TaskDuration;
+
+  public readonly start?: Moment;
+  public readonly end?: Moment;
+  public readonly taskBody: string;
 
   constructor({
     indentation = "",
     listMarker = "-",
-    status = Status.makeTodo(),
+    statusSymbol,
+    checkboxBody,
+    status,
     start,
     end,
-    duration,
-    content,
+    taskBody,
   }: {
     indentation?: string;
     listMarker?: string;
+    statusSymbol: string;
+    checkboxBody: string;
+    // ↑をcheckboxInputとして、Checkboxクラスとして持ってくる?
     status: Status;
-    start?: TaskTime;
-    end?: TaskTime;
-    duration?: TaskDuration;
-    content: string;
+    start?: Moment;
+    end?: Moment;
+    taskBody: string;
   }) {
     this.indentation = indentation;
     this.listMarker = listMarker;
+    this.statusSymbol = statusSymbol;
+    this.checkboxBody = checkboxBody;
     this.status = status;
     this.start = start;
     this.end = end;
-    this.duration = duration;
-    this.content = content;
+    this.taskBody = taskBody;
   }
 
   public static fromLine(line: string): Task | undefined {
-    const taskInput = TaskInput.fromLine(line);
-    return Task.fromTaskInput(taskInput);
-  }
+    const {
+      indentation,
+      listMarker,
+      statusSymbol,
+      body: checkboxBody,
+    } = Task.splitCheckbox(line);
 
-  static fromTaskInput(taskInput: TaskInput): Task | undefined {
-    if (taskInput.status.type === StatusType.TODO) {
-      return Task.fromTodoInput(taskInput);
-    } else if (taskInput.status.type === StatusType.DOING) {
-      return Task.fromDoingInput(taskInput);
-    } else {
-      return Task.fromOtherInput(taskInput);
-    }
-  }
-  static fromTodoInput(taskInput: TaskInput): Task {
-    if (taskInput.status.type !== StatusType.TODO) {
-      throw new Error("TaskInput is not a TODO task.");
-    }
-    // TODOタスクを読み取る際は、timeを優先的にplanに格納する(start, end, duration)
+    const status = Status.fromSymbol(statusSymbol);
+
+    const { start, end, body: taskBody } = Task.parseCheckboxBody(checkboxBody);
+
     return new Task({
-      indentation: taskInput.indentation,
-      listMarker: taskInput.listMarker,
-      status: taskInput.status,
-      content: taskInput.content,
-      start: {
-        fact:
-          !taskInput.start?.estimation && !!taskInput.start?.time
-            ? undefined
-            : taskInput.start?.time,
-        plan: taskInput.start?.estimation ?? taskInput.start?.time,
-      },
-      end: {
-        fact:
-          !taskInput.end?.estimation && !!taskInput.end?.time
-            ? undefined
-            : taskInput.end?.time,
-        plan: taskInput.end?.estimation ?? taskInput.end?.time,
-      },
-      duration: {
-        fact:
-          !taskInput.duration?.estimation && !!taskInput.duration?.time
-            ? undefined
-            : taskInput.duration?.time,
-        plan: taskInput.duration?.estimation ?? taskInput.duration?.time,
-      },
-    });
-  }
-  static fromDoingInput(taskInput: TaskInput): Task {
-    if (taskInput.status.type !== StatusType.DOING) {
-      throw new Error("TaskInput is not a DOING task.");
-    }
-    // DOINGタスクを読み取る際は、timeを優先的にplanに格納する(end, duration)
-    return new Task({
-      indentation: taskInput.indentation,
-      listMarker: taskInput.listMarker,
-      status: taskInput.status,
-      content: taskInput.content,
-      start: {
-        fact: taskInput.start?.time,
-        plan: taskInput.start?.estimation,
-      },
-      end: {
-        fact:
-          !taskInput.end?.estimation && !!taskInput.end?.time
-            ? undefined
-            : taskInput.end?.time,
-        plan: taskInput.end?.estimation ?? taskInput.end?.time,
-      },
-      duration: {
-        fact:
-          !taskInput.duration?.estimation && !!taskInput.duration?.time
-            ? undefined
-            : taskInput.duration?.time,
-        plan: taskInput.duration?.estimation ?? taskInput.duration?.time,
-      },
-    });
-  }
-  static fromOtherInput(taskInput: TaskInput): Task {
-    // その他の場合は、timeをfactに、estimationをplanに格納する
-    return new Task({
-      indentation: taskInput.indentation,
-      listMarker: taskInput.listMarker,
-      status: taskInput.status,
-      content: taskInput.content,
-      start: {
-        fact: taskInput.start?.time,
-        plan: taskInput.start?.estimation,
-      },
-      end: {
-        fact: taskInput.end?.time,
-        plan: taskInput.end?.estimation,
-      },
-      duration: {
-        fact: taskInput.duration?.time,
-        plan: taskInput.duration?.estimation,
-      },
+      indentation,
+      listMarker,
+      statusSymbol,
+      checkboxBody,
+      status,
+      start,
+      end,
+      taskBody,
     });
   }
 
-  public cancel(): Task {
-    if (this.status.type === "DONE") {
-      throw new Error("Cannot cancel a task already done.");
+  static splitCheckbox(line: string): {
+    indentation: string;
+    listMarker: string;
+    statusSymbol: string;
+    body: string;
+  } {
+    const regexMatch = line.match(Task.CHECKBOX_REGEX);
+
+    if (regexMatch === null) {
+      throw new Error("Line does not match task regex");
     }
+
+    const { indentation, listMarker, statusSymbol, body } =
+      regexMatch.groups ?? {};
+
+    return { indentation, listMarker, statusSymbol, body };
+  }
+
+  /**
+   * Parses the checkbox body and extracts the start time, end time, and task body.
+   * @param body - The checkbox body to parse.
+   * @returns An object containing the start time, end time, and task body.
+   * @throws {Error} If the line does not match the task regex.
+   * ex.
+   * - "10:00 task content -> {start: 10:00, body: "task content"}"
+   * - "10:00-12:00 task content" -> {start: 10:00, end: 12:00, body: "task content"}
+   */
+  static parseCheckboxBody(body: string): {
+    start?: Moment;
+    end?: Moment;
+    body: string;
+  } {
+    const matchingTimes = body.trim().match(Task.TIME_REGEX);
+
+    if (matchingTimes === null) {
+      throw new Error("Line does not match task regex");
+    }
+
+    const { start, end, taskBody } = matchingTimes.groups ?? {};
+
+    return {
+      start: start ? parseTime(start) : undefined,
+      end: end ? parseTime(end) : undefined,
+      body: taskBody,
+    };
+  }
+
+  /**
+   * タスクを開始する
+   * @returns ステータスがDOINGで、開始時刻の実績が入ったTask
+   *
+   * タスクの開始時は、先頭が時刻表記であるかどうかに関わらず開始時刻を挿入できるよう、
+   * checkboxBodyをtaskBodyにコピーし、startをtimeに設定し、endをundefinedにする
+   */
+  public begin(time?: Moment): Task {
     return new Task({
       ...this,
-      status: Status.makeCancelled(),
+      status: Status.Doing(),
+      start: time ?? moment(),
+      end: undefined,
+      taskBody: this.checkboxBody,
     });
   }
 
-  public toggle(isCancell: boolean = false): Task {
-    if (isCancell) {
-      return this.cancel();
-    }
+  /**
+   * タスクを終了する
+   * @returns ステータスがDONEで、終了時刻の実績が入ったTask
+   *
+   * タスク終了時は、終了時刻
+   */
+  public finish(time?: Moment): Task {
+    return new Task({
+      ...this,
+      status: Status.Done(),
+      end: time ?? moment(),
+    });
+  }
+
+  public toggle({
+    start_time,
+    end_time,
+  }: { start_time?: Moment; end_time?: Moment } = {}): Task {
     if (this.status.type === StatusType.TODO) {
-      return new Task({
-        ...this,
-        status: this.status.nextStatus(),
-        start: {
-          ...this.start,
-          fact: this.start?.fact ?? moment(),
-        },
-      });
+      return this.begin(start_time);
     } else if (this.status.type === StatusType.DOING) {
-      return new Task({
-        ...this,
-        status: this.status.nextStatus(),
-        end: {
-          ...this.end,
-          fact: this.end?.fact ?? moment(),
-        },
-      });
+      return this.finish(end_time);
     } else {
-      // Toggle the status of the task to the next status and return the new task.
-      return new Task({
-        ...this,
-        status: this.status.nextStatus(),
-      });
+      return this;
     }
   }
 
   public toString(): string {
-    const checkbox = `${this.indentation}${this.listMarker} [${this.status.symbol}]`;
-    const start = `${this.start?.fact ? this.start.fact.format("HH:mm") : ""}${
-      this.start?.plan ? `(${this.start?.plan.format("HH:mm")})` : ""
-    }`;
-    const end = `${this.end?.fact ? this.end.fact.format("HH:mm") : ""}${
-      this.end?.plan ? `(${this.end?.plan.format("HH:mm")})` : ""
-    }`;
-    const duration = `${
-      this.duration?.fact
-        ? `${this.duration.fact.hours()}:${this.duration?.fact?.minutes()}`
-        : ""
-    }${
-      this.duration?.plan
-        ? `(${this.duration.plan.hours()}:${this.duration?.plan?.minutes()})`
-        : ""
-    }`;
-    return `${checkbox} ${start},${end},${duration},${this.content}`;
+    const start = this.start?.format("HH:mm") ?? "";
+    const startEndSeparator = this.start && this.end ? "-" : "";
+    const end = this.end?.format("HH:mm") ?? "";
+    const bodySeparator = this.start || this.end ? "," : "";
+    return (
+      `${this.indentation}${this.listMarker} [${this.status.symbol}] ` +
+      `${start}${startEndSeparator}${end}` +
+      `${bodySeparator}` +
+      `${this.taskBody}`
+    );
   }
 }

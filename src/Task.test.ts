@@ -1,258 +1,247 @@
-// import { moment } from "obsidian";
 import moment from "moment";
-
 import { Status, StatusType } from "./Status";
-import { TaskInput } from "./TaskInput";
 import { Task } from "./Task";
 
-describe("Task", () => {
-  describe("fromTodoInput", () => {
-    it("should create a Task object from a TaskInput object with TODO status", () => {
-      const taskInput = new TaskInput({
-        indentation: "  ",
-        listMarker: "-",
-        statusSymbol: Status.makeTodo().symbol,
-        status: Status.makeTodo(),
-        content: "Task content",
-        start: {
-          time: moment("2022-01-01 10:00"),
-          estimation: moment("2022-01-01 09:00"),
-        },
-        end: {
-          time: moment("2022-01-01 12:00"),
-          estimation: moment("2022-01-01 13:00"),
-        },
-        duration: {
-          time: moment.duration(2, "hours"),
-          estimation: moment.duration(1, "hour"),
-        },
-      });
+describe("splitCheckbox", () => {
+  it("should split the checkbox line correctly", () => {
+    const line = "  - [x] Task content";
+    const result = Task.splitCheckbox(line);
 
-      const task = Task.fromTodoInput(taskInput);
-
-      expect(task.indentation).toBe("  ");
-      expect(task.listMarker).toBe("-");
-      expect(task.status.type).toBe(StatusType.TODO);
-      expect(task.content).toBe("Task content");
-      expect(task.start?.fact?.format("YYYY-MM-DD HH:mm")).toBe(
-        "2022-01-01 10:00"
-      );
-      expect(task.start?.plan?.format("YYYY-MM-DD HH:mm")).toBe(
-        "2022-01-01 09:00"
-      );
-      expect(task.end?.fact?.format("YYYY-MM-DD HH:mm")).toBe(
-        "2022-01-01 12:00"
-      );
-      expect(task.end?.plan?.format("YYYY-MM-DD HH:mm")).toBe(
-        "2022-01-01 13:00"
-      );
-      expect(task.duration?.fact?.asHours()).toBe(2);
-      expect(task.duration?.plan?.asHours()).toBe(1);
-    });
-  });
-});
-
-describe("fromLine", () => {
-  it("- [ ] 12:00,14:30,Task content,#tag,comment", () => {
-    const line = "- [ ] 12:00,14:30,Task content,#tag,comment";
-    const task = Task.fromLine(line);
-
-    expect(task).toBeInstanceOf(Task);
-    expect(task!.indentation).toBe("");
-    expect(task!.listMarker).toBe("-");
-    expect(task!.status.type).toBe(StatusType.TODO);
-    expect(task!.content).toBe("Task content,#tag,comment");
-    expect(task!.start!.fact).toBeUndefined();
-    expect(task!.start!.plan).toEqual(moment("12:00", "HH:mm"));
-    expect(task!.end!.fact).toBeUndefined();
-    expect(task!.end!.plan).toEqual(moment("14:30", "HH:mm"));
-    expect(task!.duration!.fact).toBeUndefined();
-    expect(task!.duration!.plan).toBeUndefined();
+    expect(result.indentation).toBe("  ");
+    expect(result.listMarker).toBe("-");
+    expect(result.statusSymbol).toBe("x");
+    expect(result.body).toBe("Task content");
   });
 
-  it("  - [ ] 12:00,14:30,2:30,Task content,#tag,comment", () => {
-    const line = "  - [ ] 12:00,14:30,2:30,Task content,#tag,comment";
-    const task = Task.fromLine(line);
-
-    expect(task).toBeInstanceOf(Task);
-    expect(task!.indentation).toBe("  ");
-    expect(task!.listMarker).toBe("-");
-    expect(task!.status.type).toBe(StatusType.TODO);
-    expect(task!.content).toBe("Task content,#tag,comment");
-    expect(task!.start!.fact).toBeUndefined();
-    expect(task!.start!.plan).toEqual(moment("12:00", "HH:mm"));
-    expect(task!.end!.fact).toBeUndefined();
-    expect(task!.end!.plan).toEqual(moment("14:30", "HH:mm"));
-    expect(task!.duration!.fact).toBeUndefined();
-    expect(task!.duration!.plan).toEqual(moment.duration("2:30"));
-  });
-
-  it("- [ ] 12:05(12:00),14:25(14:30),02:20(2:30),Task content,#tag,comment", () => {
-    const line =
-      "- [ ] 12:05(12:00),14:25(14:30),02:20(2:30),Task content,#tag,comment";
-    const task = Task.fromLine(line);
-
-    expect(task).toBeInstanceOf(Task);
-    expect(task!.indentation).toBe("");
-    expect(task!.listMarker).toBe("-");
-    expect(task!.status.type).toBe(StatusType.TODO);
-    expect(task!.content).toBe("Task content,#tag,comment");
-    expect(task!.start!.fact).toEqual(moment("12:05", "HH:mm"));
-    expect(task!.start!.plan).toEqual(moment("12:00", "HH:mm"));
-    expect(task!.end!.fact).toEqual(moment("14:25", "HH:mm"));
-    expect(task!.end!.plan).toEqual(moment("14:30", "HH:mm"));
-    expect(task!.duration!.fact).toEqual(moment.duration("2:20"));
-    expect(task!.duration!.plan).toEqual(moment.duration("2:30"));
-  });
-
-  it("- [/] 12:05(12:00),14:25(14:30),02:20(2:30),Task content,#tag,comment", () => {
-    const line =
-      "- [/] 12:05(12:00),14:25(14:30),02:20(2:30),Task content,#tag,comment";
-    const task = Task.fromLine(line);
-
-    expect(task).toBeInstanceOf(Task);
-    expect(task!.indentation).toBe("");
-    expect(task!.listMarker).toBe("-");
-    expect(task!.status.type).toBe(StatusType.DOING);
-    expect(task!.content).toBe("Task content,#tag,comment");
-    expect(task!.start!.fact).toEqual(moment("12:05", "HH:mm"));
-    expect(task!.start!.plan).toEqual(moment("12:00", "HH:mm"));
-    expect(task!.end!.fact).toEqual(moment("14:25", "HH:mm"));
-    expect(task!.end!.plan).toEqual(moment("14:30", "HH:mm"));
-    expect(task!.duration!.fact).toEqual(moment.duration("2:20"));
-    expect(task!.duration!.plan).toEqual(moment.duration("2:30"));
-  });
-
-  it("- [/] 12:05,Task content,#tag,comment", () => {
-    const line = "- [/] 12:05,Task content,#tag,comment";
-    const task = Task.fromLine(line);
-
-    expect(task).toBeInstanceOf(Task);
-    expect(task!.indentation).toBe("");
-    expect(task!.listMarker).toBe("-");
-    expect(task!.status.type).toBe(StatusType.DOING);
-    expect(task!.content).toBe("Task content,#tag,comment");
-    expect(task!.start!.fact).toEqual(moment("12:05", "HH:mm"));
-    expect(task!.start!.plan).toBeUndefined();
-    expect(task!.end!.fact).toBeUndefined();
-    expect(task!.end!.plan).toBeUndefined();
-    expect(task!.duration!.fact).toBeUndefined();
-    expect(task!.duration!.plan).toBeUndefined();
-  });
-
-  it("- [x] 12:05(12:00),14:25(14:30),02:20(2:30),Task content,#tag,comment", () => {
-    const line =
-      "- [x] 12:05(12:00),14:25(14:30),02:20(2:30),Task content,#tag,comment";
-    const task = Task.fromLine(line);
-
-    expect(task).toBeInstanceOf(Task);
-    expect(task!.indentation).toBe("");
-    expect(task!.listMarker).toBe("-");
-    expect(task!.status.type).toBe(StatusType.DONE);
-    expect(task!.content).toBe("Task content,#tag,comment");
-    expect(task!.start!.fact).toEqual(moment("12:05", "HH:mm"));
-    expect(task!.start!.plan).toEqual(moment("12:00", "HH:mm"));
-    expect(task!.end!.fact).toEqual(moment("14:25", "HH:mm"));
-    expect(task!.end!.plan).toEqual(moment("14:30", "HH:mm"));
-    expect(task!.duration!.fact).toEqual(moment.duration("2:20"));
-    expect(task!.duration!.plan).toEqual(moment.duration("2:30"));
-  });
-
-  it("- [x] 12:05,14:25,Task content,#tag,comment", () => {
-    const line = "- [x] 12:05,14:25,Task content,#tag,comment";
-    const task = Task.fromLine(line);
-
-    expect(task).toBeInstanceOf(Task);
-    expect(task!.indentation).toBe("");
-    expect(task!.listMarker).toBe("-");
-    expect(task!.status.type).toBe(StatusType.DONE);
-    expect(task!.content).toBe("Task content,#tag,comment");
-    expect(task!.start!.fact).toEqual(moment("12:05", "HH:mm"));
-    expect(task!.start!.plan).toBeUndefined();
-    expect(task!.end!.fact).toEqual(moment("14:25", "HH:mm"));
-    expect(task!.end!.plan).toBeUndefined();
-    expect(task!.duration!.fact).toBeUndefined();
-    expect(task!.duration!.plan).toBeUndefined();
-  });
-
-  it("Invalid line", () => {
+  it("should throw an error if the line does not match the task regex", () => {
     const line = "Invalid line";
+
     expect(() => {
-      Task.fromLine(line);
+      Task.splitCheckbox(line);
     }).toThrow("Line does not match task regex");
   });
 });
 
+describe("parseCheckboxBody", () => {
+  it("10:00 task content", () => {
+    const body = "10:00 task content";
+    const result = Task.parseCheckboxBody(body);
+
+    expect(result.start?.format("HH:mm")).toBe("10:00");
+    expect(result.end).toBeUndefined();
+    expect(result.body).toBe("task content");
+  });
+
+  it("10:00-12:00 task content", () => {
+    const body = "10:00-12:00 task content";
+    const result = Task.parseCheckboxBody(body);
+
+    expect(result.start?.format("HH:mm")).toBe("10:00");
+    expect(result.end?.format("HH:mm")).toBe("12:00");
+    expect(result.body).toBe("task content");
+  });
+
+  it("task content", () => {
+    const body = "task content";
+    const result = Task.parseCheckboxBody(body);
+
+    expect(result.start).toBeUndefined();
+    expect(result.end).toBeUndefined();
+    expect(result.body).toBe("task content");
+  });
+});
+
+describe("begin", () => {
+  it("should return a new Task with status set to Doing and start time set to the provided time", () => {
+    const task = new Task({
+      indentation: "  ",
+      listMarker: "-",
+      statusSymbol: "x",
+      checkboxBody: "Task content",
+      status: Status.Todo(),
+      start: undefined,
+      end: undefined,
+      taskBody: "Task content",
+    });
+
+    const startTime = moment("10:00", "HH:mm");
+    const result = task.begin(startTime);
+
+    expect(result.status.type).toBe(StatusType.DOING);
+    expect(result.start).toBe(startTime);
+    expect(result.end).toBeUndefined();
+    expect(result.taskBody).toBe(task.checkboxBody);
+  });
+
+  it("should return a new Task with status set to Doing and start time set to the current time if no time is provided", () => {
+    const task = new Task({
+      indentation: "  ",
+      listMarker: "-",
+      statusSymbol: "x",
+      checkboxBody: "Task content",
+      status: Status.Todo(),
+      start: undefined,
+      end: undefined,
+      taskBody: "Task content",
+    });
+
+    const currentTime = moment();
+    const result = task.begin();
+
+    expect(result.status.type).toBe(StatusType.DOING);
+    expect(result.start?.isSameOrAfter(currentTime)).toBe(true);
+    expect(result.end).toBeUndefined();
+    expect(result.taskBody).toBe(task.checkboxBody);
+  });
+});
+
+describe("finish", () => {
+  it("should return a new Task with status set to Done and end time set to the provided time", () => {
+    const task = new Task({
+      indentation: "  ",
+      listMarker: "-",
+      statusSymbol: "x",
+      checkboxBody: "Task content",
+      status: Status.Doing(),
+      start: moment("10:00", "HH:mm"),
+      end: undefined,
+      taskBody: "Task content",
+    });
+
+    const endTime = moment("12:00", "HH:mm");
+    const result = task.finish(endTime);
+
+    expect(result.status.type).toBe(StatusType.DONE);
+    expect(result.end).toBe(endTime);
+  });
+
+  it("should return a new Task with status set to Done and end time set to the current time if no time is provided", () => {
+    const task = new Task({
+      indentation: "  ",
+      listMarker: "-",
+      statusSymbol: "x",
+      checkboxBody: "Task content",
+      status: Status.Doing(),
+      start: moment("10:00", "HH:mm"),
+      end: undefined,
+      taskBody: "Task content",
+    });
+
+    const currentTime = moment();
+    const result = task.finish();
+
+    expect(result.status.type).toBe(StatusType.DONE);
+    expect(result.end?.isSameOrAfter(currentTime)).toBe(true);
+  });
+});
+
 describe("toggle", () => {
-  it("should toggle the status of a TODO task and update the start time if not provided", () => {
+  it("should return a new Task with status set to Doing and start time set to the provided start time if the current status is Todo", () => {
     const task = new Task({
-      status: Status.makeTodo(),
-      content: "Task content",
+      indentation: "  ",
+      listMarker: "-",
+      statusSymbol: " ",
+      checkboxBody: "Task content",
+      status: Status.Todo(),
+      start: undefined,
+      end: undefined,
+      taskBody: "Task content",
     });
 
-    const toggledTask = task.toggle(false);
+    const startTime = moment("10:00", "HH:mm");
+    const result = task.toggle({ start_time: startTime });
 
-    expect(toggledTask.status.type).toBe(StatusType.DOING);
-    expect(toggledTask.start?.fact).toBeDefined();
-    expect(toggledTask.start?.plan).toBeUndefined();
+    expect(result.status.type).toBe(StatusType.DOING);
+    expect(result.start).toBe(startTime);
+    expect(result.end).toBeUndefined();
+    expect(result.taskBody).toBe(task.checkboxBody);
   });
 
-  it("should toggle the status of a DOING task and update the end time if not provided", () => {
+  it("should return a new Task with status set to Done and end time set to the provided end time if the current status is Doing", () => {
     const task = new Task({
-      status: Status.makeDoing(),
-      content: "Task content",
+      indentation: "  ",
+      listMarker: "-",
+      statusSymbol: "x",
+      checkboxBody: "Task content",
+      status: Status.Doing(),
+      start: moment("10:00", "HH:mm"),
+      end: undefined,
+      taskBody: "Task content",
     });
 
-    const toggledTask = task.toggle(false);
+    const endTime = moment("12:00", "HH:mm");
+    const result = task.toggle({ end_time: endTime });
 
-    expect(toggledTask.status.type).toBe(StatusType.DONE);
-    expect(toggledTask.end?.fact).toBeDefined();
-    expect(toggledTask.end?.plan).toBeUndefined();
+    expect(result.status.type).toBe(StatusType.DONE);
+    expect(result.end).toBe(endTime);
   });
 
-  it("should cancel a task if isCancell is true", () => {
+  it("should return the same Task if the current status is Done", () => {
     const task = new Task({
-      status: Status.makeTodo(),
-      content: "Task content",
+      indentation: "  ",
+      listMarker: "-",
+      statusSymbol: "x",
+      checkboxBody: "Task content",
+      status: Status.Done(),
+      start: moment("10:00", "HH:mm"),
+      end: moment("12:00", "HH:mm"),
+      taskBody: "Task content",
     });
 
-    const cancelledTask = task.toggle(true);
+    const result = task.toggle({ start_time: moment(), end_time: moment() });
 
-    expect(cancelledTask.status.type).toBe(StatusType.CANCELLED);
+    expect(result).toBe(task);
   });
 });
 
 describe("toString", () => {
-  it("All properties", () => {
+  it("should return the string representation of the task with start and end times", () => {
     const task = new Task({
-      status: Status.makeTodo(),
-      content: "Task content",
-      start: {
-        fact: moment("10:00", "HH:mm"),
-        plan: moment("09:00", "HH:mm"),
-      },
-      end: {
-        fact: moment("12:00", "HH:mm"),
-        plan: moment("13:00", "HH:mm"),
-      },
-      duration: {
-        fact: moment.duration("2:00"),
-        plan: moment.duration("1:00"),
-      },
+      indentation: "  ",
+      listMarker: "-",
+      statusSymbol: "x",
+      checkboxBody: "Task content",
+      status: Status.Done(),
+      start: moment("10:00", "HH:mm"),
+      end: moment("12:00", "HH:mm"),
+      taskBody: "Task content",
     });
 
-    const expectedString =
-      "- [ ] 10:00(09:00),12:00(13:00),2:0(1:0),Task content";
-    expect(task.toString()).toBe(expectedString);
+    const result = task.toString();
+
+    expect(result).toBe("  - [x] 10:00-12:00,Task content");
   });
 
-  it("No properties", () => {
+  it("should return the string representation of the task with only start time", () => {
     const task = new Task({
-      status: Status.makeTodo(),
-      content: "Task content",
+      indentation: "  ",
+      listMarker: "-",
+      statusSymbol: "x",
+      checkboxBody: "Task content",
+      status: Status.Done(),
+      start: moment("10:00", "HH:mm"),
+      end: undefined,
+      taskBody: "Task content",
     });
 
-    const expectedString = "- [ ] ,,,Task content";
-    expect(task.toString()).toBe(expectedString);
+    const result = task.toString();
+
+    expect(result).toBe("  - [x] 10:00,Task content");
+  });
+
+  it("should return the string representation of the task without start and end times", () => {
+    const task = new Task({
+      indentation: "  ",
+      listMarker: "-",
+      statusSymbol: "x",
+      checkboxBody: "Task content",
+      status: Status.Done(),
+      start: undefined,
+      end: undefined,
+      taskBody: "Task content",
+    });
+
+    const result = task.toString();
+    expect(result).toBe("  - [x] Task content");
   });
 });
