@@ -1,5 +1,8 @@
 # Changelog
 
+## [0.5.10](https://github.com/udus122/checkbox-time-tracker/compare/0.5.9...0.5.10) - 2024-05-06
+- チェックボックス内のリンクをクリックできないバグを修正 by @udus122 in https://github.com/udus122/checkbox-time-tracker/pull/26
+
 ## [0.5.9](https://github.com/udus122/checkbox-time-tracker/compare/0.5.8...0.5.9) - 2024-05-06
 - Iconをデフォルトで利用可能なものに変更する by @udus122 in https://github.com/udus122/checkbox-time-tracker/pull/24
 
