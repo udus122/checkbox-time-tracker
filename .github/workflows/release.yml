@@ -12,7 +12,7 @@ on:
 jobs:
   build:
     if: >-
-      github.event.pull_request.merged == true 
+      github.event.pull_request.merged == true
       && startsWith(github.event.pull_request.head.ref, 'tagpr-from')
     runs-on: ubuntu-latest
     steps:
@@ -32,8 +32,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          tag="${GITHUB_REF#refs/tags/}"
-          gh release create "$tag" \
-            --title="$tag" \
+          latest_tag=$(git describe --tags --abbrev=0)
+          gh release create "$latest_tag" \
+            --title="$latest_tag" \
             --draft \
             main.js manifest.json styles.css
