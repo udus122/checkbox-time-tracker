@@ -1,5 +1,8 @@
 # Changelog
 
+## [0.5.11](https://github.com/udus122/checkbox-time-tracker/compare/0.5.10...0.5.11) - 2024-05-11
+- "Implement autoIncrementOnSameTime toggle and SettingTab" by @udus122 in https://github.com/udus122/checkbox-time-tracker/pull/28
+
 ## [0.5.10](https://github.com/udus122/checkbox-time-tracker/compare/0.5.9...0.5.10) - 2024-05-06
 - チェックボックス内のリンクをクリックできないバグを修正 by @udus122 in https://github.com/udus122/checkbox-time-tracker/pull/26
 
