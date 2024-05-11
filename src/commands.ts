@@ -1,7 +1,9 @@
 import { Command, Editor, Notice } from "obsidian";
 import { Task } from "./Task";
+import { taskOperations } from "./operations";
+import { Settings } from "./settings";
 
-export function createCommands(): Command[] {
+export function createCommands(settings: Settings): Command[] {
   return [
     {
       id: "cycle-task-status",
@@ -11,7 +13,7 @@ export function createCommands(): Command[] {
         // cmd + shift + l
         {
           modifiers: ["Mod", "Shift"],
-          key: "L",
+          key: "l",
         },
       ],
       editorCallback: (editor: Editor) => {
@@ -26,7 +28,9 @@ export function createCommands(): Command[] {
           return;
         }
 
-        const toggled = task.toggle();
+        const taskOp = new taskOperations(settings);
+
+        const toggled = taskOp.toggleTask(task);
 
         editor.setLine(line, toggled.toString());
         editor.setCursor(line, ch);

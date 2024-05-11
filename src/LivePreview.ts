@@ -1,16 +1,17 @@
 // ref. https://github.com/sytone/obsidian-tasks/blob/main/src/LivePreviewExtension.ts
-import { EditorView, PluginValue, ViewPlugin } from "@codemirror/view";
+import { EditorView, PluginValue } from "@codemirror/view";
+
 import { Task } from "./Task";
+import { Settings } from "./settings";
+import { taskOperations } from "./operations";
 
-export const newLivePreviewExtension = () => {
-  return ViewPlugin.fromClass(LivePreviewExtension);
-};
-
-class LivePreviewExtension implements PluginValue {
+export class LivePreviewExtension implements PluginValue {
   private readonly view: EditorView;
+  private readonly settings: Settings;
 
-  constructor(view: EditorView) {
+  constructor(view: EditorView, settings: Settings) {
     this.view = view;
+    this.settings = settings;
 
     this.handleClickEvent = this.handleClickEvent.bind(this);
     this.view.dom.addEventListener("click", this.handleClickEvent);
@@ -45,9 +46,11 @@ class LivePreviewExtension implements PluginValue {
     // We need to prevent default so that the checkbox is only handled by us and not obsidian.
     event.preventDefault();
 
+    const taskOp = new taskOperations(this.settings);
+
     // Clicked on a task's checkbox. Toggle the task and set it.
     // Shift-click to cancel a task.
-    const toggled = task.toggle();
+    const toggled = taskOp.toggleTask(task);
 
     // Creates a CodeMirror transaction in order to update the document.
     const transaction = state.update({
