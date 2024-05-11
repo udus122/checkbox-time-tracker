@@ -1,8 +1,9 @@
 import { Plugin } from "obsidian";
+import { ViewPlugin } from "@codemirror/view";
 
-import { newLivePreviewExtension } from "./LivePreview";
 import { createCommands } from "./commands";
 import { DEFAULT_SETTINGS, SettingTab, Settings } from "./settings";
+import { LivePreviewExtension } from "./LivePreview";
 
 export default class Main extends Plugin {
   settings: Settings;
@@ -12,9 +13,11 @@ export default class Main extends Plugin {
 
     this.addSettingTab(new SettingTab(this.app, this));
 
-    this.registerEditorExtension(newLivePreviewExtension());
+    this.registerEditorExtension(
+      ViewPlugin.define((view) => new LivePreviewExtension(view, this.settings))
+    );
 
-    createCommands().forEach((command) => {
+    createCommands(this.settings).forEach((command) => {
       this.addCommand(command);
     });
   }
