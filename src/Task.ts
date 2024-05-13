@@ -210,7 +210,7 @@ export class Task {
     const start = this.start?.format("HH:mm") ?? "";
     const startEndSeparator = this.start && this.end ? "-" : "";
     const end = this.end?.format("HH:mm") ?? "";
-    const bodySeparator = this.start || this.end ? "," : "";
+    const bodySeparator = this.start || this.end ? " " : "";
     return (
       `${this.indentation}${this.listMarker} [${this.status.symbol}] ` +
       `${start}${startEndSeparator}${end}` +

@@ -209,7 +209,7 @@ describe("toString", () => {
 
     const result = task.toString();
 
-    expect(result).toBe("  - [x] 10:00-12:00,Task content");
+    expect(result).toBe("  - [x] 10:00-12:00 Task content");
   });
 
   it("should return the string representation of the task with only start time", () => {
@@ -226,7 +226,7 @@ describe("toString", () => {
 
     const result = task.toString();
 
-    expect(result).toBe("  - [x] 10:00,Task content");
+    expect(result).toBe("  - [x] 10:00 Task content");
   });
 
   it("should return the string representation of the task without start and end times", () => {
