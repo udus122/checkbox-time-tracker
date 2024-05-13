@@ -1,5 +1,8 @@
 # Changelog
 
+## [0.5.13](https://github.com/udus122/checkbox-time-tracker/compare/0.5.12...0.5.13) - 2024-05-13
+- Change time and body separator from commna(,) to space( ) by @udus122 in https://github.com/udus122/checkbox-time-tracker/pull/32
+
 ## [0.5.12](https://github.com/udus122/checkbox-time-tracker/compare/0.5.11...0.5.12) - 2024-05-11
 - Fix toggleTask bug and add test by @udus122 in https://github.com/udus122/checkbox-time-tracker/pull/30
 
