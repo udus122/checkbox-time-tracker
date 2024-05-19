@@ -1,5 +1,8 @@
 # Changelog
 
+## [0.6.1](https://github.com/udus122/checkbox-time-tracker/compare/0.6.0...0.6.1) - 2024-05-19
+- Fix an issue where default checkbox click behavior was prevented… by @udus122 in https://github.com/udus122/checkbox-time-tracker/pull/36
+
 ## [0.6.0](https://github.com/udus122/checkbox-time-tracker/compare/0.5.13...0.6.0) - 2024-05-19
 - Change the specification so that it works only on pages with a specific CSS class. by @udus122 in https://github.com/udus122/checkbox-time-tracker/pull/34
 
