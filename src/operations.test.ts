@@ -1,14 +1,13 @@
 import moment from "moment";
+
 import { Status } from "./Status";
 import { Task } from "./Task";
 import { taskOperations } from "./operations";
+import { DEFAULT_SETTINGS } from "./settings";
 
 describe("toggleTask", () => {
   it("start", () => {
-    const settings = {
-      autoIncrementOnSameTime: false,
-    };
-    settings.autoIncrementOnSameTime = true;
+    DEFAULT_SETTINGS.autoIncrementOnSameTime = true;
 
     const task = new Task({
       indentation: "  ",
@@ -21,7 +20,7 @@ describe("toggleTask", () => {
       taskBody: "Task content",
     });
 
-    const taskOp = new taskOperations(settings);
+    const taskOp = new taskOperations(DEFAULT_SETTINGS);
     const result = taskOp.toggleTask(task);
 
     expect(result.start).toBeDefined();
@@ -29,10 +28,6 @@ describe("toggleTask", () => {
   });
 
   it("Enabled and start = end ", () => {
-    const settings = {
-      autoIncrementOnSameTime: true,
-    };
-
     const task = new Task({
       indentation: "  ",
       listMarker: "-",
@@ -44,7 +39,7 @@ describe("toggleTask", () => {
       taskBody: "Task content",
     });
 
-    const operations = new taskOperations(settings);
+    const operations = new taskOperations(DEFAULT_SETTINGS);
     const result = operations.toggleTask(
       task,
       moment("10:00", "HH:mm"),
@@ -56,10 +51,6 @@ describe("toggleTask", () => {
   });
 
   it("Disabled and start == end", () => {
-    const settings = {
-      autoIncrementOnSameTime: false,
-    };
-
     const task = new Task({
       indentation: "  ",
       listMarker: "-",
@@ -71,7 +62,7 @@ describe("toggleTask", () => {
       taskBody: "Task content",
     });
 
-    const operations = new taskOperations(settings);
+    const operations = new taskOperations(DEFAULT_SETTINGS);
     const result = operations.toggleTask(
       task,
       moment("10:00", "HH:mm"),
