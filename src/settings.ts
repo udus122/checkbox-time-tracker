@@ -52,7 +52,14 @@ export class SettingTab extends PluginSettingTab {
         tc.setValue(this.plugin.settings.enableDoingStatus).onChange(
           async (value) => {
             this.plugin.settings.enableDoingStatus = value;
+
+            // If this option is disabled, DisableDoingStatusForSubTasks should be disabled too.
+            if (!value) {
+              this.plugin.settings.DisableDoingStatusForSubTasks = false;
+            }
+
             await this.plugin.saveSettings();
+            this.display();
           }
         );
       });
