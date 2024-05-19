@@ -15,16 +15,23 @@ export class taskOperations {
     start_time: Moment = moment(),
     end_time: Moment = moment()
   ): Task {
-    if (this.settings.enableDoingStatus) {
-      if (task.status.type === StatusType.TODO) {
-        return this.startTask(task, start_time);
-      } else if (task.status.type === StatusType.DOING) {
-        return this.endTask(task, end_time);
-      } else {
-        return task;
-      }
+    // Todo/Done mode (Doing status is disabled)
+    if (
+      !this.settings.enableDoingStatus ||
+      (this.settings.DisableDoingStatusForSubTasks &&
+        task.indentation.length > 0)
+    ) {
+      return this.endTask(task, end_time);
     }
-    return this.endTask(task, end_time);
+
+    // Todo/Doing/Done mode (Doing status is enabled)
+    if (task.status.type === StatusType.TODO) {
+      return this.startTask(task, start_time);
+    } else if (task.status.type === StatusType.DOING) {
+      return this.endTask(task, end_time);
+    } else {
+      return task;
+    }
   }
 
   private checkWillIncrement(task: Task, end_time: Moment): boolean {

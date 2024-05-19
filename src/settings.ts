@@ -4,12 +4,14 @@ import Main from "./main";
 export interface Settings {
   targetCssClasses: string[];
   enableDoingStatus: boolean;
+  DisableDoingStatusForSubTasks: boolean;
   autoIncrementOnSameTime: boolean;
 }
 
 export const DEFAULT_SETTINGS: Settings = {
   targetCssClasses: ["checkbox-time-tracker", "ctt"],
   enableDoingStatus: false,
+  DisableDoingStatusForSubTasks: false,
   autoIncrementOnSameTime: false,
 };
 
@@ -54,6 +56,22 @@ export class SettingTab extends PluginSettingTab {
           }
         );
       });
+
+    if (this.plugin.settings.enableDoingStatus) {
+      new Setting(containerEl)
+        .setName("Disable Doing status for sub tasks")
+        .setDesc(
+          "サブタスク(インデントされたチェックボックス)でDoing(進行中)のステータスを使いたくない場合はONにする"
+        )
+        .addToggle((tc) => {
+          tc.setValue(
+            this.plugin.settings.DisableDoingStatusForSubTasks
+          ).onChange(async (value) => {
+            this.plugin.settings.DisableDoingStatusForSubTasks = value;
+            await this.plugin.saveSettings();
+          });
+        });
+    }
 
     new Setting(containerEl)
       .setName("Enable auto increment when end time is the same as start time")
