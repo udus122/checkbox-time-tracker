@@ -1,7 +1,7 @@
 {
   "id": "checkbox-time-tracker",
   "name": "Checkbox Time Tracker",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "minAppVersion": "0.15.0",
   "description": "Obsidian plugin for convenient time tracking using checkbox",
   "author": "UD",
