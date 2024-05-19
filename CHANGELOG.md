@@ -1,5 +1,8 @@
 # Changelog
 
+## [0.6.0](https://github.com/udus122/checkbox-time-tracker/compare/0.5.13...0.6.0) - 2024-05-19
+- Change the specification so that it works only on pages with a specific CSS class. by @udus122 in https://github.com/udus122/checkbox-time-tracker/pull/34
+
 ## [0.5.13](https://github.com/udus122/checkbox-time-tracker/compare/0.5.12...0.5.13) - 2024-05-13
 - Change time and body separator from commna(,) to space( ) by @udus122 in https://github.com/udus122/checkbox-time-tracker/pull/32
 
