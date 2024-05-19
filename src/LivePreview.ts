@@ -23,6 +23,25 @@ export class LivePreviewExtension implements PluginValue {
 
   private handleClickEvent(event: MouseEvent): boolean {
     const { target } = event;
+    // Check if the click event happened inside an element with the class ".checkbox-time-tracker"
+    const eventTarget = target as HTMLElement;
+    let parent = eventTarget?.parentElement;
+
+    const classNames = this.settings.targetCssClasses;
+
+    while (parent) {
+      if (
+        classNames.some((className) => parent?.classList.contains(className))
+      ) {
+        break;
+      }
+      parent = parent.parentElement;
+    }
+
+    // If the click event did not happen inside an element with the class ".checkbox-time-tracker", return false
+    if (!parent) {
+      return false;
+    }
 
     // Only handle checkbox clicks.
     if (
