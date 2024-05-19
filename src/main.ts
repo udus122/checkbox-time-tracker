@@ -20,9 +20,29 @@ export default class Main extends Plugin {
     createCommands(this.settings).forEach((command) => {
       this.addCommand(command);
     });
+
+    const styleElement = document.createElement("style");
+    styleElement.id = "checkbox-time-tracker-styles";
+    styleElement.textContent = `${this.settings.targetCssClasses
+      .map((cn) => `.${cn}`)
+      .join(", ")} {
+        .HyperMD-task-line[data-task="x"] {
+          /* Disable the click event to prevent the visual check from being removed when clicking multiple times. */
+          /* ref. https://github.com/obsidian-tasks-group/obsidian-tasks/issues/2389#issuecomment-1794328100 */
+          pointer-events: none;
+      }
+    `;
+    document.head.appendChild(styleElement);
   }
 
-  onunload() {}
+  onunload() {
+    const styleElement = document.getElementById(
+      "checkbox-time-tracker-styles"
+    );
+    if (styleElement) {
+      styleElement.remove();
+    }
+  }
 
   async loadSettings() {
     this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());

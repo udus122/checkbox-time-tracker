@@ -38,4 +38,4 @@ jobs:
           latest_tag=$(git describe --tags --abbrev=0)
           gh release create "$latest_tag" \
             --title="$latest_tag" \
-            main.js manifest.json styles.css
+            main.js manifest.json
