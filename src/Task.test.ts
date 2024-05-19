@@ -65,7 +65,7 @@ describe("begin", () => {
     });
 
     const startTime = moment("10:00", "HH:mm");
-    const result = task.begin(startTime);
+    const result = task.makeDoing(startTime);
 
     expect(result.status.type).toBe(StatusType.DOING);
     expect(result.start).toBe(startTime);
@@ -86,7 +86,7 @@ describe("begin", () => {
     });
 
     const currentTime = moment();
-    const result = task.begin();
+    const result = task.makeDoing();
 
     expect(result.status.type).toBe(StatusType.DOING);
     expect(result.start?.isSameOrAfter(currentTime)).toBe(true);
@@ -109,7 +109,7 @@ describe("finish", () => {
     });
 
     const endTime = moment("12:00", "HH:mm");
-    const result = task.finish(endTime);
+    const result = task.makeDone(endTime);
 
     expect(result.status.type).toBe(StatusType.DONE);
     expect(result.end).toBe(endTime);
@@ -128,71 +128,72 @@ describe("finish", () => {
     });
 
     const currentTime = moment();
-    const result = task.finish();
+    const result = task.makeDone();
 
     expect(result.status.type).toBe(StatusType.DONE);
     expect(result.end?.isSameOrAfter(currentTime)).toBe(true);
   });
 });
 
-describe("toggle", () => {
-  it("should return a new Task with status set to Doing and start time set to the provided start time if the current status is Todo", () => {
-    const task = new Task({
-      indentation: "  ",
-      listMarker: "-",
-      statusSymbol: " ",
-      checkboxBody: "Task content",
-      status: Status.Todo(),
-      start: undefined,
-      end: undefined,
-      taskBody: "Task content",
-    });
+// TODO: move to operations.test.ts
+// describe("toggle", () => {
+//   it("should return a new Task with status set to Doing and start time set to the provided start time if the current status is Todo", () => {
+//     const task = new Task({
+//       indentation: "  ",
+//       listMarker: "-",
+//       statusSymbol: " ",
+//       checkboxBody: "Task content",
+//       status: Status.Todo(),
+//       start: undefined,
+//       end: undefined,
+//       taskBody: "Task content",
+//     });
 
-    const startTime = moment("10:00", "HH:mm");
-    const result = task.toggle({ start_time: startTime });
+//     const startTime = moment("10:00", "HH:mm");
+//     const result = task.toggle({ start_time: startTime });
 
-    expect(result.status.type).toBe(StatusType.DOING);
-    expect(result.start).toBe(startTime);
-    expect(result.end).toBeUndefined();
-    expect(result.taskBody).toBe(task.checkboxBody);
-  });
+//     expect(result.status.type).toBe(StatusType.DOING);
+//     expect(result.start).toBe(startTime);
+//     expect(result.end).toBeUndefined();
+//     expect(result.taskBody).toBe(task.checkboxBody);
+//   });
 
-  it("should return a new Task with status set to Done and end time set to the provided end time if the current status is Doing", () => {
-    const task = new Task({
-      indentation: "  ",
-      listMarker: "-",
-      statusSymbol: "x",
-      checkboxBody: "Task content",
-      status: Status.Doing(),
-      start: moment("10:00", "HH:mm"),
-      end: undefined,
-      taskBody: "Task content",
-    });
+//   it("should return a new Task with status set to Done and end time set to the provided end time if the current status is Doing", () => {
+//     const task = new Task({
+//       indentation: "  ",
+//       listMarker: "-",
+//       statusSymbol: "x",
+//       checkboxBody: "Task content",
+//       status: Status.Doing(),
+//       start: moment("10:00", "HH:mm"),
+//       end: undefined,
+//       taskBody: "Task content",
+//     });
 
-    const endTime = moment("12:00", "HH:mm");
-    const result = task.toggle({ end_time: endTime });
+//     const endTime = moment("12:00", "HH:mm");
+//     const result = task.toggle({ end_time: endTime });
 
-    expect(result.status.type).toBe(StatusType.DONE);
-    expect(result.end).toBe(endTime);
-  });
+//     expect(result.status.type).toBe(StatusType.DONE);
+//     expect(result.end).toBe(endTime);
+//   });
 
-  it("should return the same Task if the current status is Done", () => {
-    const task = new Task({
-      indentation: "  ",
-      listMarker: "-",
-      statusSymbol: "x",
-      checkboxBody: "Task content",
-      status: Status.Done(),
-      start: moment("10:00", "HH:mm"),
-      end: moment("12:00", "HH:mm"),
-      taskBody: "Task content",
-    });
+//   it("should return the same Task if the current status is Done", () => {
+//     const task = new Task({
+//       indentation: "  ",
+//       listMarker: "-",
+//       statusSymbol: "x",
+//       checkboxBody: "Task content",
+//       status: Status.Done(),
+//       start: moment("10:00", "HH:mm"),
+//       end: moment("12:00", "HH:mm"),
+//       taskBody: "Task content",
+//     });
 
-    const result = task.toggle({ start_time: moment(), end_time: moment() });
+//     const result = task.toggle({ start_time: moment(), end_time: moment() });
 
-    expect(result).toBe(task);
-  });
-});
+//     expect(result).toBe(task);
+//   });
+// });
 
 describe("toString", () => {
   it("should return the string representation of the task with start and end times", () => {

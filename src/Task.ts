@@ -1,6 +1,6 @@
 import moment from "moment";
 
-import { Status, StatusType } from "./Status";
+import { Status } from "./Status";
 
 import type { Moment } from "moment";
 import { parseTime } from "./utils";
@@ -169,7 +169,7 @@ export class Task {
    * タスクの開始時は、先頭が時刻表記であるかどうかに関わらず開始時刻を挿入できるよう、
    * checkboxBodyをtaskBodyにコピーし、startをtimeに設定し、endをundefinedにする
    */
-  public begin(time?: Moment): Task {
+  public makeDoing(time?: Moment): Task {
     return new Task({
       ...this,
       status: Status.Doing(),
@@ -185,25 +185,12 @@ export class Task {
    *
    * タスク終了時は、終了時刻
    */
-  public finish(time?: Moment): Task {
+  public makeDone(time?: Moment): Task {
     return new Task({
       ...this,
       status: Status.Done(),
       end: time ?? moment(),
     });
-  }
-
-  public toggle({
-    start_time,
-    end_time,
-  }: { start_time?: Moment; end_time?: Moment } = {}): Task {
-    if (this.status.type === StatusType.TODO) {
-      return this.begin(start_time);
-    } else if (this.status.type === StatusType.DOING) {
-      return this.finish(end_time);
-    } else {
-      return this;
-    }
   }
 
   public toString(): string {
