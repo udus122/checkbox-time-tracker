@@ -1,5 +1,8 @@
 # Changelog
 
+## [0.7.0](https://github.com/udus122/checkbox-time-tracker/compare/0.6.1...0.7.0) - 2024-05-19
+- Add todo/done mode(option to enable doing status) by @udus122 in https://github.com/udus122/checkbox-time-tracker/pull/38
+
 ## [0.6.1](https://github.com/udus122/checkbox-time-tracker/compare/0.6.0...0.6.1) - 2024-05-19
 - Fix an issue where default checkbox click behavior was prevented… by @udus122 in https://github.com/udus122/checkbox-time-tracker/pull/36
 
