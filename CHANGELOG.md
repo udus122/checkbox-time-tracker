@@ -1,5 +1,8 @@
 # Changelog
 
+## [0.7.1](https://github.com/udus122/checkbox-time-tracker/compare/0.7.0...0.7.1) - 2024-05-19
+- Fix bug with DisableDoingStatusForSubTasks by @udus122 in https://github.com/udus122/checkbox-time-tracker/pull/40
+
 ## [0.7.0](https://github.com/udus122/checkbox-time-tracker/compare/0.6.1...0.7.0) - 2024-05-19
 - Add todo/done mode(option to enable doing status) by @udus122 in https://github.com/udus122/checkbox-time-tracker/pull/38
 
