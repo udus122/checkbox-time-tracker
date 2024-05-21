@@ -27,10 +27,13 @@ export default class Main extends Plugin {
       .map((cn) => `.${cn}`)
       .join(", ")} {
         .HyperMD-task-line[data-task="x"] {
-          /* Disable the click event to prevent the visual check from being removed when clicking multiple times. */
-          /* ref. https://github.com/obsidian-tasks-group/obsidian-tasks/issues/2389#issuecomment-1794328100 */
-          pointer-events: none;
-      }
+          /* Specify only label and input so that links in the text are clickable. */
+          label,input {
+            /* Disable the click event to prevent the visual check from being removed when clicking multiple times. */
+            /* ref. https://github.com/obsidian-tasks-group/obsidian-tasks/issues/2389#issuecomment-1794328100 */
+            pointer-events: none;
+          }
+        }
     `;
     document.head.appendChild(styleElement);
   }
