@@ -1,5 +1,8 @@
 # Changelog
 
+## [0.7.2](https://github.com/udus122/checkbox-time-tracker/compare/0.7.1...0.7.2) - 2024-05-21
+- fix: disable pointer-events only in checkbox label and input by @udus122 in https://github.com/udus122/checkbox-time-tracker/pull/42
+
 ## [0.7.1](https://github.com/udus122/checkbox-time-tracker/compare/0.7.0...0.7.1) - 2024-05-19
 - Fix bug with DisableDoingStatusForSubTasks by @udus122 in https://github.com/udus122/checkbox-time-tracker/pull/40
 
