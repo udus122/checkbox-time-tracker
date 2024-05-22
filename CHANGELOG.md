@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.7.3](https://github.com/udus122/checkbox-time-tracker/compare/0.7.2...0.7.3) - 2024-05-22
+- Create LICENSE by @udus122 in https://github.com/udus122/checkbox-time-tracker/pull/44
+- Feature/docs by @udus122 in https://github.com/udus122/checkbox-time-tracker/pull/46
+
 ## [0.7.2](https://github.com/udus122/checkbox-time-tracker/compare/0.7.1...0.7.2) - 2024-05-21
 - fix: disable pointer-events only in checkbox label and input by @udus122 in https://github.com/udus122/checkbox-time-tracker/pull/42
 
