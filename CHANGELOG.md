@@ -1,5 +1,8 @@
 # Changelog
 
+## [0.7.4](https://github.com/udus122/checkbox-time-tracker/compare/0.7.3...0.7.4) - 2024-05-22
+- Remove default hotkey by @udus122 in https://github.com/udus122/checkbox-time-tracker/pull/47
+
 ## [0.7.3](https://github.com/udus122/checkbox-time-tracker/compare/0.7.2...0.7.3) - 2024-05-22
 - Create LICENSE by @udus122 in https://github.com/udus122/checkbox-time-tracker/pull/44
 - Feature/docs by @udus122 in https://github.com/udus122/checkbox-time-tracker/pull/46
