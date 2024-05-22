@@ -31,7 +31,7 @@ export class SettingTab extends PluginSettingTab {
     new Setting(containerEl)
       .setName("CSS Classes for Track")
       .setDesc(
-        "タイマーを適用する要素のCSSクラスを指定します。複数指定する場合はスペース区切りで指定してください。先頭に.(ドット)は不要です"
+        "Specify the CSS class of the element to which the timer applies. If you specify multiple classes, separate them with spaces. There is no need to start with a dot (.)."
       )
       .addTextArea((text) =>
         text
@@ -46,7 +46,9 @@ export class SettingTab extends PluginSettingTab {
     new Setting(containerEl)
       .setName("Enable Doing Status")
       .setDesc(
-        "ステータスにDoing(進行中)を追加する。シンボルは`/`で表される。ex. [ ] -> [/] -> [x]"
+        `Adds Doing(In Progress) to the status. The symbol is "/".
+        So, when you click a checkbox, it will switch like this: ex. [ ] -> [/] -> [x].
+        A custom theme or CSS snippet may be required to display the symbols properly.`
       )
       .addToggle((tc) => {
         tc.setValue(this.plugin.settings.enableDoingStatus).onChange(
@@ -68,7 +70,7 @@ export class SettingTab extends PluginSettingTab {
       new Setting(containerEl)
         .setName("Disable Doing status for sub tasks")
         .setDesc(
-          "サブタスク(インデントされたチェックボックス)でDoing(進行中)のステータスを使いたくない場合はONにする"
+          "Turn this on if you don't want to use the Doing status for subtasks (indented checkboxes)"
         )
         .addToggle((tc) => {
           tc.setValue(
@@ -80,19 +82,22 @@ export class SettingTab extends PluginSettingTab {
         });
     }
 
-    new Setting(containerEl)
-      .setName("Enable auto increment when end time is the same as start time")
-      // Enable auto increment when end time is the same as start time
-      .setDesc(
-        "Day Planerで、開始時刻と終了時刻が同じ場合、durationがデフォルトのものになってしまうことを避けるために使う"
-      )
-      .addToggle((tc) => {
-        tc.setValue(this.plugin.settings.autoIncrementOnSameTime).onChange(
-          async (value) => {
-            this.plugin.settings.autoIncrementOnSameTime = value;
-            await this.plugin.saveSettings();
-          }
-        );
-      });
+    if (this.plugin.settings.enableDoingStatus) {
+      new Setting(containerEl)
+        .setName(
+          "Enable auto increment when end time is the same as start time"
+        )
+        .setDesc(
+          "If the start and end time are the same, delay the end time by 1 minute."
+        )
+        .addToggle((tc) => {
+          tc.setValue(this.plugin.settings.autoIncrementOnSameTime).onChange(
+            async (value) => {
+              this.plugin.settings.autoIncrementOnSameTime = value;
+              await this.plugin.saveSettings();
+            }
+          );
+        });
+    }
   }
 }
