@@ -22,7 +22,6 @@ describe("toggleTask", () => {
     const task = new Task({
       indentation: "  ",
       listMarker: "-",
-      statusSymbol: " ",
       checkboxBody: "Task content",
       status: Status.Todo(),
       start: undefined,
@@ -46,7 +45,6 @@ describe("toggleTask", () => {
     const task = new Task({
       indentation: "  ",
       listMarker: "-",
-      statusSymbol: " ",
       checkboxBody: "Task content",
       status: Status.Todo(),
       start: undefined,
@@ -69,7 +67,6 @@ describe("toggleTask", () => {
     const task = new Task({
       indentation: "  ",
       listMarker: "-",
-      statusSymbol: "/",
       checkboxBody: "Task content",
       status: Status.Doing(),
       start: moment("10:00", "HH:mm"),
@@ -96,7 +93,6 @@ describe("toggleTask", () => {
     const task = new Task({
       indentation: "  ",
       listMarker: "-",
-      statusSymbol: "/",
       checkboxBody: "Task content",
       status: Status.Doing(),
       start: moment("10:00", "HH:mm"),
@@ -126,7 +122,6 @@ describe("toggleTask", () => {
     const task = new Task({
       indentation: "  ",
       listMarker: "-",
-      statusSymbol: " ",
       checkboxBody: "Task content",
       status: Status.Todo(),
       start: undefined,
@@ -152,7 +147,6 @@ describe("toggleTask", () => {
     const task = new Task({
       indentation: "  ",
       listMarker: "-",
-      statusSymbol: "/",
       checkboxBody: "Task content",
       status: Status.Doing(),
       start: moment("10:00", "HH:mm"),
@@ -178,7 +172,6 @@ describe("toggleTask", () => {
     const task = new Task({
       indentation: "  ",
       listMarker: "-",
-      statusSymbol: " ",
       checkboxBody: "Task content",
       status: Status.Todo(),
       start: undefined,
@@ -204,7 +197,6 @@ describe("toggleTask", () => {
     const task = new Task({
       indentation: "    ",
       listMarker: "-",
-      statusSymbol: " ",
       checkboxBody: "Task content",
       status: Status.Todo(),
       start: undefined,
@@ -218,5 +210,36 @@ describe("toggleTask", () => {
     expect(result.status.type).toBe(StatusType.DONE);
     expect(result.start).toBeUndefined();
     expect(result.end).toBeDefined();
+  });
+});
+
+describe("duplicateTask", () => {
+  it("should duplicate a task with the same properties", () => {
+    const settings = {
+      ...DEFAULT_SETTINGS,
+      enableDoingStatus: true,
+      DisableDoingStatusForSubTasks: false,
+    };
+
+    const task = new Task({
+      indentation: "  ",
+      listMarker: "-",
+      checkboxBody: "Task content",
+      status: Status.Todo(),
+      start: undefined,
+      end: undefined,
+      taskBody: "Task content",
+    });
+
+    const taskOp = new taskOperations(settings);
+    const duplicatedTask = taskOp.duplicateTask(task);
+
+    expect(duplicatedTask.indentation).toBe(task.indentation);
+    expect(duplicatedTask.listMarker).toBe(task.listMarker);
+    expect(duplicatedTask.checkboxBody).toBe(task.checkboxBody);
+    expect(duplicatedTask.status.type).toBe(task.status.type);
+    expect(duplicatedTask.start).toBeUndefined();
+    expect(duplicatedTask.end).toBeUndefined();
+    expect(duplicatedTask.taskBody).toBe(task.taskBody);
   });
 });

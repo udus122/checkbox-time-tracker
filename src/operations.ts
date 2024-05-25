@@ -1,7 +1,7 @@
 import moment, { type Moment } from "moment";
 import { Task } from "./Task";
 import { Settings } from "./settings";
-import { StatusType } from "./Status";
+import { Status, StatusType } from "./Status";
 
 export class taskOperations {
   private readonly settings: Settings;
@@ -32,6 +32,20 @@ export class taskOperations {
     } else {
       return task;
     }
+  }
+
+  /**
+   * Duplicate a task as new task
+   * @param task
+   */
+  public duplicateTask(task: Task): Task {
+    return new Task({
+      ...task,
+      checkboxBody: task.taskBody,
+      status: Status.Todo(),
+      start: undefined,
+      end: undefined,
+    });
   }
 
   private checkWillIncrement(task: Task, end_time: Moment): boolean {
