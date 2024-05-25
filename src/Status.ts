@@ -61,6 +61,7 @@ export class Status {
         throw new Error(`Unknown status symbol: ${symbol}`);
     }
   }
+
   public nextStatus(): Status {
     return Status.fromType(this.nextStatusType);
   }
@@ -99,5 +100,17 @@ export class Status {
       StatusType.CANCELLED,
       StatusType.TODO
     );
+  }
+
+  static isTodo(status: Status): boolean {
+    return status.type === StatusType.TODO;
+  }
+
+  static isDoing(status: Status): boolean {
+    return status.type === StatusType.DOING;
+  }
+
+  static isDone(status: Status): boolean {
+    return status.type === StatusType.DONE;
   }
 }
