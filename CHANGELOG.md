@@ -1,5 +1,8 @@
 # Changelog
 
+## [0.7.5](https://github.com/udus122/checkbox-time-tracker/compare/0.7.4...0.7.5) - 2024-05-25
+- remove Lookbehinds by @udus122 in https://github.com/udus122/checkbox-time-tracker/pull/49
+
 ## [0.7.4](https://github.com/udus122/checkbox-time-tracker/compare/0.7.3...0.7.4) - 2024-05-22
 - Remove default hotkey by @udus122 in https://github.com/udus122/checkbox-time-tracker/pull/47
 
