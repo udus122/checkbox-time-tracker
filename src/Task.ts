@@ -45,7 +45,7 @@ export class Task {
     /^/.source + // beginning of line
       /(?:(?<start>\d{1,2}:\d{1,2}))?/.source + // capture start time (HH:mm)
       /\s*-?\s*/.source + // separator(-)
-      /(?:(?<end>(?<=\s*-\s*)\d{1,2}:\d{1,2}))?/.source + // capture end time (HH:mm)
+      /(?:(?<end>\d{1,2}:\d{1,2}))?/.source + // capture end time (HH:mm)
       /\s*/.source + // whitespaces
       /,?(?<taskBody>.*)/.source //capture task body
   );
