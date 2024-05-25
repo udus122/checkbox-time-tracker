@@ -1,5 +1,8 @@
 # Changelog
 
+## [0.7.6](https://github.com/udus122/checkbox-time-tracker/compare/0.7.5...0.7.6) - 2024-05-25
+- add command duplicate-as-new-task and end-and-duplicate-task by @udus122 in https://github.com/udus122/checkbox-time-tracker/pull/51
+
 ## [0.7.5](https://github.com/udus122/checkbox-time-tracker/compare/0.7.4...0.7.5) - 2024-05-25
 - remove Lookbehinds by @udus122 in https://github.com/udus122/checkbox-time-tracker/pull/49
 
