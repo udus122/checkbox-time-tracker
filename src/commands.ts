@@ -54,5 +54,35 @@ export function createCommands(settings: Settings): Command[] {
         editor.setCursor(line, ch);
       },
     },
+    {
+      id: "end-and-duplicate-task",
+      name: "End current task and insert duplicated on the next line",
+      icon: "check-check",
+      editorCallback: (editor: Editor) => {
+        const { line, ch } = editor.getCursor();
+
+        const lineContent = editor.getLine(line);
+
+        const task = Task.fromLine(lineContent);
+
+        if (!task) {
+          new Notice("No task found");
+          return;
+        }
+
+        const taskOp = new taskOperations(settings);
+
+        const ended = taskOp.endTask(task);
+        editor.setLine(line, ended.toString());
+
+        const duplicated = taskOp.duplicateTask(ended);
+
+        editor.replaceRange("\n" + duplicated.toString(), {
+          line,
+          ch: editor.getLine(line).length,
+        });
+        editor.setCursor(line, ch);
+      },
+    },
   ];
 }
