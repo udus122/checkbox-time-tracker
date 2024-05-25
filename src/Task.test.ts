@@ -22,32 +22,74 @@ describe("splitCheckbox", () => {
   });
 });
 
-describe("parseCheckboxBody", () => {
-  it("10:00 task content", () => {
-    const body = "10:00 task content";
-    const result = Task.parseCheckboxBody(body);
+describe("fromLine", () => {
+  it("- [ ] task content", () => {
+    const body = "- [ ] task content";
+    const result = Task.fromLine(body);
 
-    expect(result.start?.format("HH:mm")).toBe("10:00");
-    expect(result.end).toBeUndefined();
-    expect(result.body).toBe("task content");
+    expect(result?.start).toBeUndefined();
+    expect(result?.end).toBeUndefined();
+    expect(result?.taskBody).toBe("task content");
   });
 
-  it("10:00-12:00 task content", () => {
-    const body = "10:00-12:00 task content";
-    const result = Task.parseCheckboxBody(body);
+  it("- [ ] 10:00-12:00(1h30m) task content", () => {
+    const body = "- [ ] task content";
+    const result = Task.fromLine(body);
 
-    expect(result.start?.format("HH:mm")).toBe("10:00");
-    expect(result.end?.format("HH:mm")).toBe("12:00");
-    expect(result.body).toBe("task content");
+    expect(result?.start).toBeUndefined();
+    expect(result?.end).toBeUndefined();
+    expect(result?.taskBody).toBe("task content");
   });
 
-  it("task content", () => {
-    const body = "task content";
-    const result = Task.parseCheckboxBody(body);
+  it("- [/] 11:00 10:00-12:00(1h30m) task content", () => {
+    const body = "- [/] 11:00 10:00-12:00(1h30m) task content";
+    const result = Task.fromLine(body);
 
-    expect(result.start).toBeUndefined();
-    expect(result.end).toBeUndefined();
-    expect(result.body).toBe("task content");
+    expect(result?.start?.format("HH:mm")).toBe("11:00");
+    expect(result?.end).toBeUndefined();
+    expect(result?.taskBody).toBe("10:00-12:00(1h30m) task content");
+  });
+
+  it("- [/] 10:00-12:00(1h30m) task content", () => {
+    const body = "- [/] 10:00-12:00(1h30m) task content";
+    expect(() => {
+      Task.fromLine(body);
+    }).toThrow("Line does not match Doing regex");
+  });
+
+  it("- [/] 10:00 task content", () => {
+    const body = "- [/] 10:00 task content";
+    const result = Task.fromLine(body);
+
+    expect(result?.start?.format("HH:mm")).toBe("10:00");
+    expect(result?.end).toBeUndefined();
+    expect(result?.taskBody).toBe("task content");
+  });
+
+  it("- [x] 10:00-12:00 task content", () => {
+    const body = "- [x] 10:00-12:00 task content";
+    const result = Task.fromLine(body);
+
+    expect(result?.start?.format("HH:mm")).toBe("10:00");
+    expect(result?.end?.format("HH:mm")).toBe("12:00");
+    expect(result?.taskBody).toBe("task content");
+  });
+
+  it("- [x] 10:00-12:00 11:00-12:00(1h) task content", () => {
+    const body = "- [x] 10:00-12:00 11:00-12:00(1h) task content";
+    const result = Task.fromLine(body);
+
+    expect(result?.start?.format("HH:mm")).toBe("10:00");
+    expect(result?.end?.format("HH:mm")).toBe("12:00");
+    expect(result?.taskBody).toBe("11:00-12:00(1h) task content");
+  });
+
+  it("- [x] 10:00 task content", () => {
+    const body = "- [x] 10:00 task content";
+
+    expect(() => {
+      Task.fromLine(body);
+    }).toThrow("Line does not match Done regex");
   });
 });
 
@@ -56,7 +98,6 @@ describe("begin", () => {
     const task = new Task({
       indentation: "  ",
       listMarker: "-",
-      statusSymbol: "x",
       checkboxBody: "Task content",
       status: Status.Todo(),
       start: undefined,
@@ -77,7 +118,6 @@ describe("begin", () => {
     const task = new Task({
       indentation: "  ",
       listMarker: "-",
-      statusSymbol: "x",
       checkboxBody: "Task content",
       status: Status.Todo(),
       start: undefined,
@@ -100,7 +140,6 @@ describe("finish", () => {
     const task = new Task({
       indentation: "  ",
       listMarker: "-",
-      statusSymbol: "x",
       checkboxBody: "Task content",
       status: Status.Doing(),
       start: moment("10:00", "HH:mm"),
@@ -119,7 +158,24 @@ describe("finish", () => {
     const task = new Task({
       indentation: "  ",
       listMarker: "-",
-      statusSymbol: "x",
+      checkboxBody: "Task content",
+      status: Status.Doing(),
+      start: moment("10:00", "HH:mm"),
+      end: undefined,
+      taskBody: "Task content",
+    });
+
+    const currentTime = moment();
+    const result = task.makeDone();
+
+    expect(result.status.type).toBe(StatusType.DONE);
+    expect(result.end?.isSameOrAfter(currentTime)).toBe(true);
+  });
+
+  it("should return a new Task with status set to Done and end time set to the current time if no time is provided", () => {
+    const task = new Task({
+      indentation: "  ",
+      listMarker: "-",
       checkboxBody: "Task content",
       status: Status.Doing(),
       start: moment("10:00", "HH:mm"),
@@ -200,7 +256,6 @@ describe("toString", () => {
     const task = new Task({
       indentation: "  ",
       listMarker: "-",
-      statusSymbol: "x",
       checkboxBody: "Task content",
       status: Status.Done(),
       start: moment("10:00", "HH:mm"),
@@ -217,7 +272,6 @@ describe("toString", () => {
     const task = new Task({
       indentation: "  ",
       listMarker: "-",
-      statusSymbol: "x",
       checkboxBody: "Task content",
       status: Status.Done(),
       start: moment("10:00", "HH:mm"),
@@ -234,7 +288,6 @@ describe("toString", () => {
     const task = new Task({
       indentation: "  ",
       listMarker: "-",
-      statusSymbol: "x",
       checkboxBody: "Task content",
       status: Status.Done(),
       start: undefined,

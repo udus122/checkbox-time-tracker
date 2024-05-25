@@ -34,25 +34,8 @@ export class Task {
     "u"
   );
 
-  /**
-   * Regular expression pattern for matching time values in the format HH:mm.
-   * The pattern captures the start time and end time as named groups.
-   * ex.
-   * - "10:00 task content -> {start: 10:00, body: "task content"}"
-   * - "10:00-12:00 task content" -> {start: 10:00, end: 12:00, body: "task content"}
-   */
-  static readonly TIME_REGEX = new RegExp(
-    /^/.source + // beginning of line
-      /(?:(?<start>\d{1,2}:\d{1,2}))?/.source + // capture start time (HH:mm)
-      /\s*-?\s*/.source + // separator(-)
-      /(?:(?<end>\d{1,2}:\d{1,2}))?/.source + // capture end time (HH:mm)
-      /\s*/.source + // whitespaces
-      /,?(?<taskBody>.*)/.source //capture task body
-  );
-
   public readonly indentation: string;
   public readonly listMarker: string;
-  public readonly statusSymbol: string;
   public readonly checkboxBody: string;
 
   public readonly status: Status;
@@ -64,7 +47,6 @@ export class Task {
   constructor({
     indentation = "",
     listMarker = "-",
-    statusSymbol,
     checkboxBody,
     status,
     start,
@@ -73,9 +55,7 @@ export class Task {
   }: {
     indentation?: string;
     listMarker?: string;
-    statusSymbol: string;
     checkboxBody: string;
-    // ↑をcheckboxInputとして、Checkboxクラスとして持ってくる?
     status: Status;
     start?: Moment;
     end?: Moment;
@@ -83,7 +63,6 @@ export class Task {
   }) {
     this.indentation = indentation;
     this.listMarker = listMarker;
-    this.statusSymbol = statusSymbol;
     this.checkboxBody = checkboxBody;
     this.status = status;
     this.start = start;
@@ -92,27 +71,16 @@ export class Task {
   }
 
   public static fromLine(line: string): Task | undefined {
-    const {
-      indentation,
-      listMarker,
-      statusSymbol,
-      body: checkboxBody,
-    } = Task.splitCheckbox(line);
-
+    const { statusSymbol } = Task.splitCheckbox(line);
     const status = Status.fromSymbol(statusSymbol);
 
-    const { start, end, body: taskBody } = Task.parseCheckboxBody(checkboxBody);
-
-    return new Task({
-      indentation,
-      listMarker,
-      statusSymbol,
-      checkboxBody,
-      status,
-      start,
-      end,
-      taskBody,
-    });
+    if (Status.isTodo(status)) {
+      return Task.parseTodo(line);
+    } else if (Status.isDoing(status)) {
+      return Task.parseDoing(line);
+    } else if (Status.isDone(status)) {
+      return Task.parseDone(line);
+    }
   }
 
   static splitCheckbox(line: string): {
@@ -133,6 +101,87 @@ export class Task {
     return { indentation, listMarker, statusSymbol, body };
   }
 
+  static parseTodo(line: string): Task {
+    const {
+      indentation,
+      listMarker,
+      statusSymbol,
+      body: checkboxBody,
+    } = Task.splitCheckbox(line);
+    const status = Status.fromSymbol(statusSymbol);
+
+    return new Task({
+      indentation,
+      listMarker,
+      status,
+      checkboxBody,
+      start: undefined,
+      end: undefined,
+      taskBody: checkboxBody,
+    });
+  }
+
+  static parseDoing(line: string): Task {
+    const DOING_BODY_REGEX = /^(?<start>\d{1,2}:\d{1,2})\s+(?<taskBody>.*)/;
+
+    const {
+      indentation,
+      listMarker,
+      statusSymbol,
+      body: checkboxBody,
+    } = Task.splitCheckbox(line);
+    const status = Status.fromSymbol(statusSymbol);
+
+    const matchingTimes = checkboxBody.trim().match(DOING_BODY_REGEX);
+
+    if (matchingTimes === null) {
+      throw new Error("Line does not match Doing regex");
+    }
+
+    const { start, taskBody } = matchingTimes.groups ?? {};
+
+    return new Task({
+      indentation,
+      listMarker,
+      status,
+      checkboxBody,
+      start: parseTime(start),
+      end: undefined,
+      taskBody,
+    });
+  }
+
+  static parseDone(line: string): Task {
+    const DONE_BODY_REGEX =
+      /^(?<start>\d{1,2}:\d{1,2})-(?<end>\d{1,2}:\d{1,2})\s+(?<taskBody>.*)/;
+
+    const {
+      indentation,
+      listMarker,
+      statusSymbol,
+      body: checkboxBody,
+    } = Task.splitCheckbox(line);
+    const status = Status.fromSymbol(statusSymbol);
+
+    const matchingTimes = checkboxBody.trim().match(DONE_BODY_REGEX);
+
+    if (matchingTimes === null) {
+      throw new Error("Line does not match Done regex");
+    }
+
+    const { start, end, taskBody } = matchingTimes.groups ?? {};
+
+    return new Task({
+      indentation,
+      listMarker,
+      status,
+      checkboxBody,
+      start: parseTime(start),
+      end: parseTime(end),
+      taskBody,
+    });
+  }
+
   /**
    * Parses the checkbox body and extracts the start time, end time, and task body.
    * @param body - The checkbox body to parse.
@@ -142,25 +191,6 @@ export class Task {
    * - "10:00 task content -> {start: 10:00, body: "task content"}"
    * - "10:00-12:00 task content" -> {start: 10:00, end: 12:00, body: "task content"}
    */
-  static parseCheckboxBody(body: string): {
-    start?: Moment;
-    end?: Moment;
-    body: string;
-  } {
-    const matchingTimes = body.trim().match(Task.TIME_REGEX);
-
-    if (matchingTimes === null) {
-      throw new Error("Line does not match task regex");
-    }
-
-    const { start, end, taskBody } = matchingTimes.groups ?? {};
-
-    return {
-      start: start ? parseTime(start) : undefined,
-      end: end ? parseTime(end) : undefined,
-      body: taskBody,
-    };
-  }
 
   /**
    * タスクを開始する
