@@ -21,12 +21,15 @@ export function createCommands(settings: Settings): Command[] {
           return;
         }
 
-        const taskOp = new taskOperations(settings);
+        try {
+          const taskOp = new taskOperations(settings);
+          const toggled = taskOp.toggleTask(task);
 
-        const toggled = taskOp.toggleTask(task);
-
-        editor.setLine(line, toggled.toString());
-        editor.setCursor(line, ch);
+          editor.setLine(line, toggled.toString());
+          editor.setCursor(line, ch);
+        } catch (e) {
+          new Notice(e.message);
+        }
       },
     },
     {
@@ -44,14 +47,18 @@ export function createCommands(settings: Settings): Command[] {
           return;
         }
 
-        const taskOp = new taskOperations(settings);
-        const duplicated = taskOp.duplicateTask(task);
+        try {
+          const taskOp = new taskOperations(settings);
+          const duplicated = taskOp.duplicateTask(task);
 
-        editor.replaceRange("\n" + duplicated.toString(), {
-          line,
-          ch: lineContent.length,
-        });
-        editor.setCursor(line, ch);
+          editor.replaceRange("\n" + duplicated.toString(), {
+            line,
+            ch: lineContent.length,
+          });
+          editor.setCursor(line, ch);
+        } catch (e) {
+          new Notice(e.message);
+        }
       },
     },
     {
@@ -70,18 +77,22 @@ export function createCommands(settings: Settings): Command[] {
           return;
         }
 
-        const taskOp = new taskOperations(settings);
+        try {
+          const taskOp = new taskOperations(settings);
 
-        const ended = taskOp.endTask(task);
-        editor.setLine(line, ended.toString());
+          const ended = taskOp.endTask(task);
+          editor.setLine(line, ended.toString());
 
-        const duplicated = taskOp.duplicateTask(ended);
+          const duplicated = taskOp.duplicateTask(ended);
 
-        editor.replaceRange("\n" + duplicated.toString(), {
-          line,
-          ch: editor.getLine(line).length,
-        });
-        editor.setCursor(line, ch);
+          editor.replaceRange("\n" + duplicated.toString(), {
+            line,
+            ch: editor.getLine(line).length,
+          });
+          editor.setCursor(line, ch);
+        } catch (e) {
+          new Notice(e.message);
+        }
       },
     },
   ];
