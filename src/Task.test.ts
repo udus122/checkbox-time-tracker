@@ -66,6 +66,15 @@ describe("fromLine", () => {
     expect(result?.taskBody).toBe("task content");
   });
 
+  it("- [/] 10:00 ", () => {
+    const body = "- [/] 10:00 ";
+    const result = Task.fromLine(body);
+
+    expect(result?.start?.format("HH:mm")).toBe("10:00");
+    expect(result?.end).toBeUndefined();
+    expect(result?.taskBody).toBe("");
+  });
+
   it("- [x] 10:00-12:00 task content", () => {
     const body = "- [x] 10:00-12:00 task content";
     const result = Task.fromLine(body);

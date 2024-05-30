@@ -122,7 +122,7 @@ export class Task {
   }
 
   static parseDoing(line: string): Task {
-    const DOING_BODY_REGEX = /^(?<start>\d{1,2}:\d{1,2})\s+(?<taskBody>.*)/;
+    const DOING_BODY_REGEX = /^\s*(?<start>\d{1,2}:\d{1,2})\s+(?<taskBody>.*)/;
 
     const {
       indentation,
@@ -132,7 +132,7 @@ export class Task {
     } = Task.splitCheckbox(line);
     const status = Status.fromSymbol(statusSymbol);
 
-    const matchingTimes = checkboxBody.trim().match(DOING_BODY_REGEX);
+    const matchingTimes = checkboxBody.match(DOING_BODY_REGEX);
 
     if (matchingTimes === null) {
       throw new Error("Line does not match Doing regex");
