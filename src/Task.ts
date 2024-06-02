@@ -1,9 +1,9 @@
-import moment from "moment";
+import { moment } from "obsidian";
 
 import { Status } from "./Status";
+import { parseTime } from "./utils";
 
 import type { Moment } from "moment";
-import { parseTime } from "./utils";
 
 export class Task {
   /** Match the indentation at the beginning of a line */
@@ -203,6 +203,7 @@ export class Task {
     return new Task({
       ...this,
       status: Status.Doing(),
+      // @ts-expect-error: In obsidian.d.ts, Moment is namespace imported instead of default imported.
       start: time ?? moment(),
       end: undefined,
       taskBody: this.checkboxBody,
@@ -219,6 +220,7 @@ export class Task {
     return new Task({
       ...this,
       status: Status.Done(),
+      // @ts-expect-error: In obsidian.d.ts, Moment is namespace imported instead of default imported.
       end: time ?? moment(),
     });
   }

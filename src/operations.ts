@@ -1,4 +1,6 @@
-import moment, { type Moment } from "moment";
+import { moment } from "obsidian";
+import type { Moment } from "moment";
+
 import { Task } from "./Task";
 import { Settings } from "./settings";
 import { Status, StatusType } from "./Status";
@@ -12,7 +14,9 @@ export class taskOperations {
 
   public toggleTask(
     task: Task,
+    // @ts-expect-error: In obsidian.d.ts, Moment is namespace imported instead of default imported.
     start_time: Moment = moment(),
+    // @ts-expect-error: In obsidian.d.ts, Moment is namespace imported instead of default imported.
     end_time: Moment = moment()
   ): Task {
     // Todo/Done mode (Doing status is disabled)
@@ -55,7 +59,7 @@ export class taskOperations {
       task.start.isSame(end_time, "minute")
     );
   }
-
+  // @ts-expect-error: In obsidian.d.ts, Moment is namespace imported instead of default imported.
   public startTask(task: Task, time: Moment = moment()): Task {
     if (task.status.type !== StatusType.TODO) {
       throw new Error("Task is not in TODO status");
@@ -63,7 +67,7 @@ export class taskOperations {
 
     return task.makeDoing(time);
   }
-
+  // @ts-expect-error: In obsidian.d.ts, Moment is namespace imported instead of default imported.
   public endTask(task: Task, time: Moment = moment()): Task {
     const willIncrement = this.checkWillIncrement(task, time);
 

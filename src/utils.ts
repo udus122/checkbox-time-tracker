@@ -1,8 +1,9 @@
-import moment from "moment";
+import { moment } from "obsidian";
 
 import type { Duration, Moment } from "moment";
 
 export function parseTime(time: string): Moment {
+  // @ts-expect-error: In obsidian.d.ts, Moment is namespace imported instead of default imported.
   const timeParsed = moment(time, "HH:mm");
 
   if (!timeParsed.isValid()) {
