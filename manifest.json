@@ -3,7 +3,7 @@
   "name": "Checkbox Time Tracker",
   "version": "0.7.7",
   "minAppVersion": "1.5.12",
-  "description": "Obsidian plugin for convenient time tracking using checkbox",
+  "description": "Insert timestamp when you check off the checkbox",
   "author": "UD",
   "authorUrl": "https://notes.udus.dev",
   "fundingUrl": "",
