@@ -29,7 +29,7 @@ export class SettingTab extends PluginSettingTab {
     containerEl.empty();
 
     new Setting(containerEl)
-      .setName("CSS Classes for Track")
+      .setName("CSS classes for track")
       .setDesc(
         "Specify the CSS class of the element to which the timer applies. If you specify multiple classes, separate them with spaces. There is no need to start with a dot (.)."
       )
@@ -44,7 +44,7 @@ export class SettingTab extends PluginSettingTab {
       );
 
     new Setting(containerEl)
-      .setName("Enable Doing Status")
+      .setName("Enable doing status")
       .setDesc(
         `Adds Doing(In Progress) to the status. The symbol is "/".
         So, when you click a checkbox, it will switch like this: ex. [ ] -> [/] -> [x].
@@ -68,7 +68,7 @@ export class SettingTab extends PluginSettingTab {
 
     if (this.plugin.settings.enableDoingStatus) {
       new Setting(containerEl)
-        .setName("Disable Doing status for sub tasks")
+        .setName("Disable doing status for sub tasks")
         .setDesc(
           "Turn this on if you don't want to use the Doing status for subtasks (indented checkboxes)"
         )
