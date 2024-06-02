@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.7.8](https://github.com/udus122/checkbox-time-tracker/compare/0.7.7...0.7.8) - 2024-06-02
+- update minifest.json by @udus122 in https://github.com/udus122/checkbox-time-tracker/pull/59
+- Use sentence case in UI by @udus122 in https://github.com/udus122/checkbox-time-tracker/pull/58
+- chore: replace moment from moment to obsidian by @udus122 in https://github.com/udus122/checkbox-time-tracker/pull/61
+
 ## [0.7.7](https://github.com/udus122/checkbox-time-tracker/compare/0.7.6...0.7.7) - 2024-05-30
 - fix: Regex doesn't match when status is Doing and there is no taskBody #53 and When the status is Doing Status and the task body is empty, clicking the checkbox will change the status back to Todo #54 by @udus122 in https://github.com/udus122/checkbox-time-tracker/pull/55
 - feat: notice caught error by @udus122 in https://github.com/udus122/checkbox-time-tracker/pull/57
