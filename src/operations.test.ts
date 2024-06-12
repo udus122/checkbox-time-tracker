@@ -6,6 +6,7 @@ import { taskOperations } from "./operations";
 
 const DEFAULT_SETTINGS = {
   targetCssClasses: ["checkbox-time-tracker", "ctt"],
+  insertDateFormat: "HH:mm",
   enableDoingStatus: false,
   disableDoingStatusForSubTasks: false,
   autoIncrementOnSameTime: false,

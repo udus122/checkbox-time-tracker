@@ -3,6 +3,7 @@ import Main from "./main";
 
 export interface Settings {
   targetCssClasses: string[];
+  insertDateFormat: string;
   enableDoingStatus: boolean;
   disableDoingStatusForSubTasks: boolean;
   autoIncrementOnSameTime: boolean;
@@ -10,6 +11,7 @@ export interface Settings {
 
 export const DEFAULT_SETTINGS: Settings = {
   targetCssClasses: ["checkbox-time-tracker", "ctt"],
+  insertDateFormat: "HH:mm",
   enableDoingStatus: false,
   disableDoingStatusForSubTasks: false,
   autoIncrementOnSameTime: false,
@@ -39,6 +41,19 @@ export class SettingTab extends PluginSettingTab {
           .setValue(this.plugin.settings.targetCssClasses.join(" "))
           .onChange(async (value) => {
             this.plugin.settings.targetCssClasses = value.split(/\s+|\n+/);
+            await this.plugin.saveSettings();
+          })
+      );
+
+    new Setting(containerEl)
+      .setName("Date format")
+      .setDesc("The format of the time to insert. (default: HH:mm)")
+      .addText((text) =>
+        text
+          .setPlaceholder("HH:mm")
+          .setValue(this.plugin.settings.insertDateFormat)
+          .onChange(async (value) => {
+            this.plugin.settings.insertDateFormat = value;
             await this.plugin.saveSettings();
           })
       );
