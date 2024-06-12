@@ -4,14 +4,14 @@ import Main from "./main";
 export interface Settings {
   targetCssClasses: string[];
   enableDoingStatus: boolean;
-  DisableDoingStatusForSubTasks: boolean;
+  disableDoingStatusForSubTasks: boolean;
   autoIncrementOnSameTime: boolean;
 }
 
 export const DEFAULT_SETTINGS: Settings = {
   targetCssClasses: ["checkbox-time-tracker", "ctt"],
   enableDoingStatus: false,
-  DisableDoingStatusForSubTasks: false,
+  disableDoingStatusForSubTasks: false,
   autoIncrementOnSameTime: false,
 };
 
@@ -57,7 +57,7 @@ export class SettingTab extends PluginSettingTab {
 
             // If this option is disabled, DisableDoingStatusForSubTasks should be disabled too.
             if (!value) {
-              this.plugin.settings.DisableDoingStatusForSubTasks = false;
+              this.plugin.settings.disableDoingStatusForSubTasks = false;
             }
 
             await this.plugin.saveSettings();
@@ -74,9 +74,9 @@ export class SettingTab extends PluginSettingTab {
         )
         .addToggle((tc) => {
           tc.setValue(
-            this.plugin.settings.DisableDoingStatusForSubTasks
+            this.plugin.settings.disableDoingStatusForSubTasks
           ).onChange(async (value) => {
-            this.plugin.settings.DisableDoingStatusForSubTasks = value;
+            this.plugin.settings.disableDoingStatusForSubTasks = value;
             await this.plugin.saveSettings();
           });
         });

@@ -22,7 +22,7 @@ export class taskOperations {
     // Todo/Done mode (Doing status is disabled)
     if (
       !this.settings.enableDoingStatus ||
-      (this.settings.DisableDoingStatusForSubTasks &&
+      (this.settings.disableDoingStatusForSubTasks &&
         task.indentation.length > 0)
     ) {
       return this.endTask(task, end_time);
