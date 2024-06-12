@@ -153,7 +153,7 @@ export class Task {
 
   static parseDone(line: string): Task {
     const DONE_BODY_REGEX =
-      /^(?<start>\d{1,2}:\d{1,2})-(?<end>\d{1,2}:\d{1,2})\s+(?<taskBody>.*)/;
+      /^(?<start>\d{1,2}:\d{1,2})\s*-\s*(?<end>\d{1,2}:\d{1,2})\s+(?<taskBody>.*)/;
 
     const {
       indentation,
