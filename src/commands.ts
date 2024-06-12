@@ -25,7 +25,7 @@ export function createCommands(settings: Settings): Command[] {
           const taskOp = new taskOperations(settings);
           const toggled = taskOp.toggleTask(task);
 
-          editor.setLine(line, toggled.toString());
+          editor.setLine(line, taskOp.formatTask(toggled));
           editor.setCursor(line, ch);
         } catch (e) {
           new Notice(e.message);
@@ -51,7 +51,7 @@ export function createCommands(settings: Settings): Command[] {
           const taskOp = new taskOperations(settings);
           const duplicated = taskOp.duplicateTask(task);
 
-          editor.replaceRange("\n" + duplicated.toString(), {
+          editor.replaceRange("\n" + taskOp.formatTask(duplicated), {
             line,
             ch: lineContent.length,
           });
@@ -81,11 +81,11 @@ export function createCommands(settings: Settings): Command[] {
           const taskOp = new taskOperations(settings);
 
           const ended = taskOp.endTask(task);
-          editor.setLine(line, ended.toString());
+          editor.setLine(line, taskOp.formatTask(ended));
 
           const duplicated = taskOp.duplicateTask(ended);
 
-          editor.replaceRange("\n" + duplicated.toString(), {
+          editor.replaceRange("\n" + taskOp.formatTask(duplicated), {
             line,
             ch: editor.getLine(line).length,
           });

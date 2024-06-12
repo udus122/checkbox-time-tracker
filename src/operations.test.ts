@@ -243,3 +243,66 @@ describe("duplicateTask", () => {
     expect(duplicatedTask.taskBody).toBe(task.taskBody);
   });
 });
+
+describe("formatTask", () => {
+  it("  - [x] 10:00-12:00 Task content", () => {
+    const task = new Task({
+      indentation: "  ",
+      listMarker: "-",
+      checkboxBody: "Task content",
+      status: Status.Done(),
+      start: moment("10:00", "HH:mm"),
+      end: moment("12:00", "HH:mm"),
+      taskBody: "Task content",
+    });
+
+    const settings = {
+      ...DEFAULT_SETTINGS,
+    };
+    const taskOp = new taskOperations(settings);
+
+    const result = taskOp.formatTask(task);
+
+    expect(result).toBe("  - [x] 10:00-12:00 Task content");
+  });
+
+  it("  - [x] 10:00 Task content", () => {
+    const task = new Task({
+      indentation: "  ",
+      listMarker: "-",
+      checkboxBody: "Task content",
+      status: Status.Done(),
+      start: moment("10:00", "HH:mm"),
+      end: undefined,
+      taskBody: "Task content",
+    });
+
+    const settings = {
+      ...DEFAULT_SETTINGS,
+    };
+    const taskOp = new taskOperations(settings);
+    const result = taskOp.formatTask(task);
+
+    expect(result).toBe("  - [x] 10:00 Task content");
+  });
+
+  it("  - [x] Task content", () => {
+    const task = new Task({
+      indentation: "  ",
+      listMarker: "-",
+      checkboxBody: "Task content",
+      status: Status.Done(),
+      start: undefined,
+      end: undefined,
+      taskBody: "Task content",
+    });
+
+    const settings = {
+      ...DEFAULT_SETTINGS,
+    };
+    const taskOp = new taskOperations(settings);
+    const result = taskOp.formatTask(task);
+
+    expect(result).toBe("  - [x] Task content");
+  });
+});

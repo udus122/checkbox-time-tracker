@@ -77,4 +77,17 @@ export class taskOperations {
 
     return task.makeDone(end_time);
   }
+
+  public formatTask(task: Task): string {
+    const start = task.start?.format("HH:mm") ?? "";
+    const startEndSeparator = task.start && task.end ? "-" : "";
+    const end = task.end?.format("HH:mm") ?? "";
+    const bodySeparator = task.start || task.end ? " " : "";
+    return (
+      `${task.indentation}${task.listMarker} [${task.status.symbol}] ` +
+      `${start}${startEndSeparator}${end}` +
+      `${bodySeparator}` +
+      `${task.taskBody}`
+    );
+  }
 }

@@ -78,7 +78,7 @@ export class LivePreviewExtension implements PluginValue {
         changes: {
           from: line.from,
           to: line.to,
-          insert: toggled.toString(),
+          insert: taskOp.formatTask(toggled),
         },
       });
       this.view.dispatch(transaction);
