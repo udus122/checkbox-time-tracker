@@ -5,7 +5,10 @@
 Insert timestamp when you check off the checkbox.
 Examples are below.
 
-Timestamp format is `HH:mm` and if you want to include the end time, use `HH:mm-HH:mm`
+The default timestamp format is `HH:mm` and if you want to include the end time, use `HH:mm-HH:mm`
+You can also insert date, like: `YYYY-MM-DD HH:mm`
+
+For more information, see [Settings](#settings).
 
 ## Screenshots
 
@@ -19,7 +22,17 @@ By enabling Doing Status, you can also insert start and end times.
 
 ## Installation
 
-### Installing the plugin using BRAT
+Installation from Obsidian's community plugins:
+
+- Open Settings > community plugins
+- Turn off 'Safe mode'
+- Click 'Browse' button to browse plugins
+- Search for 'Checkbot Time Tracker'
+- Click 'Install' button
+
+or via [this url](obsidian://show-plugin?id=checkbox-time-tracker)
+
+### Install the plugin using BRAT
 
 1. Install the BRAT plugin
     1. Open `Settings` -> `Community Plugins`
@@ -36,6 +49,30 @@ By enabling Doing Status, you can also insert start and end times.
 
 1. Add the `checkbox-time-tracker`(default, can be changed by setting) class to the [`cssclasses` property](https://help.obsidian.md/Editing+and+formatting/Properties#Default+properties) of the page on which you want to enable time tracking
 2. Then, when you check the checkbox on that page, the timestamp will be inserted.
+
+## Settings
+
+You can insert the date in addition to the time, and enable the doing status to record the start and end time.
+
+Here are some examples:
+
+### Default
+
+This setting inserts the date as follows: `- [x] 12:00 ...`
+
+![setting_default](./docs/images/setting_default.jpg)
+
+### Display start and end dates including the day of the week
+
+This setting inserts the date as follows: `- [x] 2024/01/01(Mon) 12:00 - 2024/01/01 13:00 ...`
+
+![setting_start_end_weekend](./docs/images/setting_start_end_weekend.jpg)
+
+### Display the start and end dates with links to daily notes
+
+This setting inserts the date as follows: `- [x] [[2024-01-01]] 12:00 ...`
+
+![setting_daily_note](./docs/images/setting_daily_note.jpg)
 
 
 ## Doing status style
