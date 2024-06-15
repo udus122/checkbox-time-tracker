@@ -4,13 +4,40 @@ import type { Moment } from "moment";
 import { Task } from "./Task";
 import { Settings } from "./settings";
 import { Status, StatusType } from "./Status";
-import { parseTime } from "./utils";
+import { parseDateTime } from "./utils";
 
 export class taskOperations {
   private readonly settings: Settings;
 
   constructor(settings: Settings) {
     this.settings = settings;
+  }
+
+  private get startRegex(): RegExp {
+    return this.settings.enableDateInserting
+      ? /\s*(?<start>\S+? \S+?)/
+      : /\s*(?<start>\S+?)/;
+  }
+
+  private get endRegex(): RegExp {
+    return this.settings.enableDateInserting
+      ? /\s*(?<end>\S+? \S+?)/
+      : /\s*(?<end>\S+?)/;
+  }
+
+  private readonly taskBodyRegex = /(?= )\s+(?<taskBody>.*)/;
+
+  private get doingBodyRegex(): RegExp {
+    return new RegExp(this.startRegex.source + this.taskBodyRegex.source);
+  }
+
+  private get doneBodyRegex(): RegExp {
+    return new RegExp(
+      this.startRegex.source +
+        this.settings.separator +
+        this.endRegex.source +
+        this.taskBodyRegex.source
+    );
   }
 
   public parseLine(line: string): Task | undefined {
@@ -47,8 +74,6 @@ export class taskOperations {
   }
 
   private parseDoing(line: string): Task {
-    const DOING_BODY_REGEX = /^\s*(?<start>\d{1,2}:\d{1,2})\s+(?<taskBody>.*)/;
-
     const {
       indentation,
       listMarker,
@@ -57,7 +82,7 @@ export class taskOperations {
     } = splitCheckbox(line);
     const status = Status.fromSymbol(statusSymbol);
 
-    const matchingTimes = checkboxBody.match(DOING_BODY_REGEX);
+    const matchingTimes = checkboxBody.match(this.doingBodyRegex);
 
     if (matchingTimes === null) {
       throw new Error("Line does not match Doing regex");
@@ -65,21 +90,20 @@ export class taskOperations {
 
     const { start, taskBody } = matchingTimes.groups ?? {};
 
+    const parsed = parseDateTime(start, this.datetimeFormat);
+
     return new Task({
       indentation,
       listMarker,
       status,
       checkboxBody,
-      start: parseTime(start),
+      start: parsed,
       end: undefined,
       taskBody,
     });
   }
 
   private parseDone(line: string): Task {
-    const DONE_BODY_REGEX =
-      /^(?<start>\d{1,2}:\d{1,2})\s*-\s*(?<end>\d{1,2}:\d{1,2})\s+(?<taskBody>.*)/;
-
     const {
       indentation,
       listMarker,
@@ -88,7 +112,7 @@ export class taskOperations {
     } = splitCheckbox(line);
     const status = Status.fromSymbol(statusSymbol);
 
-    const matchingTimes = checkboxBody.trim().match(DONE_BODY_REGEX);
+    const matchingTimes = checkboxBody.trim().match(this.doneBodyRegex);
 
     if (matchingTimes === null) {
       throw new Error("Line does not match Done regex");
@@ -96,15 +120,24 @@ export class taskOperations {
 
     const { start, end, taskBody } = matchingTimes.groups ?? {};
 
+    const parsedStart = parseDateTime(start, this.datetimeFormat);
+    const parsedEnd = parseDateTime(end, this.datetimeFormat);
+
     return new Task({
       indentation,
       listMarker,
       status,
       checkboxBody,
-      start: parseTime(start),
-      end: parseTime(end),
+      start: parsedStart,
+      end: parsedEnd,
       taskBody,
     });
+  }
+
+  private get datetimeFormat(): string {
+    return this.settings.enableDateInserting
+      ? `${this.settings.dateFormat} ${this.settings.timeFormat}`
+      : this.settings.timeFormat;
   }
 
   public toggleTask(
@@ -174,9 +207,11 @@ export class taskOperations {
   }
 
   public formatTask(task: Task): string {
-    const start = task.start?.format(this.settings.timeFormat) ?? "";
-    const startEndSeparator = task.start && task.end ? "-" : "";
-    const end = task.end?.format(this.settings.timeFormat) ?? "";
+    const start = task.start?.format(this.datetimeFormat) ?? "";
+    // const startEndSeparator = task.start && task.end ? "-" : "";
+    const startEndSeparator =
+      task.start && task.end ? this.settings.separator : "";
+    const end = task.end?.format(this.datetimeFormat) ?? "";
     const bodySeparator = task.start || task.end ? " " : "";
     return (
       `${task.indentation}${task.listMarker} [${task.status.symbol}] ` +

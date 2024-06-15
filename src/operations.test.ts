@@ -309,6 +309,31 @@ describe("formatTask", () => {
 
     expect(result).toBe("  - [x] Task content");
   });
+
+  it("  - [x] 2024-06-15 10:00 - 2024-06-16 12:00 Task content", () => {
+    const task = new Task({
+      indentation: "  ",
+      listMarker: "-",
+      checkboxBody: "Task content",
+      status: Status.Done(),
+      start: moment("2024-06-15 10:00", "YYYY-MM-DD HH:mm"),
+      end: moment("2024-06-16 12:00", "YYYY-MM-DD HH:mm"),
+      taskBody: "Task content",
+    });
+
+    const settings = {
+      ...DEFAULT_SETTINGS,
+      enableDateInserting: true,
+      separator: " - ",
+    };
+    const taskOp = new taskOperations(settings);
+
+    const result = taskOp.formatTask(task);
+
+    expect(result).toBe(
+      "  - [x] 2024-06-15 10:00 - 2024-06-16 12:00 Task content"
+    );
+  });
 });
 
 describe("fromLine", () => {
@@ -347,7 +372,7 @@ describe("fromLine", () => {
     expect(() => {
       const taskOp = new taskOperations(DEFAULT_SETTINGS);
       taskOp.parseLine(body);
-    }).toThrow("Line does not match Doing regex");
+    }).toThrow("Invalid date-time format. Expected format: HH:mm.");
   });
 
   it("- [/] 10:00 task content", () => {
@@ -370,6 +395,41 @@ describe("fromLine", () => {
     expect(result?.taskBody).toBe("");
   });
 
+  it("- [/] 2024-06-15 10:00 task content", () => {
+    const body = "- [/] 2024-06-15 10:00 task content";
+    const taskOp = new taskOperations({
+      ...DEFAULT_SETTINGS,
+      enableDateInserting: true,
+    });
+    const result = taskOp.parseLine(body);
+    expect(result?.start?.format("YYYY-MM-DD HH:mm")).toBe("2024-06-15 10:00");
+    expect(result?.taskBody).toBe("task content");
+  });
+
+  it("- [/] [[2024-06-15]] 10:00 task content", () => {
+    const body = "- [/] [[2024-06-15]] 10:00 task content";
+    const taskOp = new taskOperations({
+      ...DEFAULT_SETTINGS,
+      enableDateInserting: true,
+      dateFormat: "\\[\\[YYYY-MM-DD\\]\\]",
+    });
+    const result = taskOp.parseLine(body);
+    expect(result?.start?.format("YYYY-MM-DD HH:mm")).toBe("2024-06-15 10:00");
+    expect(result?.taskBody).toBe("task content");
+  });
+
+  it("- [/] 2024/06/15 10:00 task content", () => {
+    const body = "- [/] [[2024-06-15]] 10:00 task content";
+    const taskOp = new taskOperations({
+      ...DEFAULT_SETTINGS,
+      enableDateInserting: true,
+      dateFormat: "\\[\\[YYYY-MM-DD\\]\\]",
+    });
+    const result = taskOp.parseLine(body);
+    expect(result?.start?.format("YYYY-MM-DD HH:mm")).toBe("2024-06-15 10:00");
+    expect(result?.taskBody).toBe("task content");
+  });
+
   it("- [x] 10:00-12:00 task content", () => {
     const body = "- [x] 10:00-12:00 task content";
     const taskOp = new taskOperations(DEFAULT_SETTINGS);
@@ -390,14 +450,36 @@ describe("fromLine", () => {
     expect(result?.taskBody).toBe("11:00-12:00(1h) task content");
   });
 
-  it("- [x] 10:00 - 12:00 11:00-12:00(1h) task content", () => {
-    const body = "- [x] 10:00 - 12:00 11:00-12:00(1h) task content";
-    const taskOp = new taskOperations(DEFAULT_SETTINGS);
+  it("- [x] 2024-06-15 10:00 - 2024-06-15 12:00 11:00-13:00(2h) task content", () => {
+    const body =
+      "- [x] 2024-06-15 10:00 - 2024-06-15 12:00 11:00-13:00(2h) task content";
+    const taskOp = new taskOperations({
+      ...DEFAULT_SETTINGS,
+      enableDateInserting: true,
+      separator: " - ",
+    });
     const result = taskOp.parseLine(body);
 
     expect(result?.start?.format("HH:mm")).toBe("10:00");
     expect(result?.end?.format("HH:mm")).toBe("12:00");
-    expect(result?.taskBody).toBe("11:00-12:00(1h) task content");
+    expect(result?.taskBody).toBe("11:00-13:00(2h) task content");
+  });
+
+  it("- [x] 2024-06-14 10:00 - 2024-06-16 12:00 11:00-13:00(2h) task content", () => {
+    const body =
+      "- [x] 2024-06-14 10:00 - 2024-06-16 12:00 11:00-13:00(2h) task content";
+    const taskOp = new taskOperations({
+      ...DEFAULT_SETTINGS,
+      enableDateInserting: true,
+      separator: " - ",
+    });
+    const result = taskOp.parseLine(body);
+
+    expect(result?.start?.format("YYYY-MM-DD")).toBe("2024-06-14");
+    expect(result?.start?.format("HH:mm")).toBe("10:00");
+    expect(result?.end?.format("YYYY-MM-DD")).toBe("2024-06-16");
+    expect(result?.end?.format("HH:mm")).toBe("12:00");
+    expect(result?.taskBody).toBe("11:00-13:00(2h) task content");
   });
 
   it("- [x] 10:00 task content", () => {

@@ -1,5 +1,5 @@
 import { Command, Editor, Notice } from "obsidian";
-import { Task } from "./Task";
+
 import { taskOperations } from "./operations";
 import { Settings } from "./settings";
 
@@ -14,7 +14,8 @@ export function createCommands(settings: Settings): Command[] {
 
         const lineContent = editor.getLine(line);
 
-        const task = Task.fromLine(lineContent);
+        const taskOp = new taskOperations(settings);
+        const task = taskOp.parseLine(lineContent);
 
         if (!task) {
           new Notice("No task found");
@@ -22,7 +23,6 @@ export function createCommands(settings: Settings): Command[] {
         }
 
         try {
-          const taskOp = new taskOperations(settings);
           const toggled = taskOp.toggleTask(task);
 
           editor.setLine(line, taskOp.formatTask(toggled));
@@ -40,7 +40,8 @@ export function createCommands(settings: Settings): Command[] {
         const { line, ch } = editor.getCursor();
         const lineContent = editor.getLine(line);
 
-        const task = Task.fromLine(lineContent);
+        const taskOp = new taskOperations(settings);
+        const task = taskOp.parseLine(lineContent);
 
         if (!task) {
           new Notice("No task found");
@@ -70,8 +71,8 @@ export function createCommands(settings: Settings): Command[] {
 
         const lineContent = editor.getLine(line);
 
-        const task = Task.fromLine(lineContent);
-
+        const taskOp = new taskOperations(settings);
+        const task = taskOp.parseLine(lineContent);
         if (!task) {
           new Notice("No task found");
           return;
