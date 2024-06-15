@@ -1,7 +1,7 @@
 {
   "name": "checkbox-time-tracker",
-  "version": "1.0.0",
-  "description": "Obsidian plugin for convenient time tracking using checkbox",
+  "version": "0.7.8",
+  "description": "Insert timestamp when you check off the checkbox",
   "main": "main.js",
   "scripts": {
     "dev": "node esbuild.config.mjs",
