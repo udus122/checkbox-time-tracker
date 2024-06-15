@@ -1,7 +1,7 @@
 {
   "id": "checkbox-time-tracker",
   "name": "Checkbox Time Tracker",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "minAppVersion": "1.5.12",
   "description": "Insert timestamp when you check off the checkbox",
   "author": "UD",
