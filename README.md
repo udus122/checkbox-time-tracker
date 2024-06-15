@@ -1,7 +1,5 @@
 # Checkbox Time Tracker
 
-日本語のREADMEは[こちら](./docs//README.ja.md)
-
 ## Overview
 
 Insert timestamp when you check off the checkbox.
