@@ -5,7 +5,7 @@ export interface Settings {
   targetCssClasses: string[];
   timeFormat: string;
   separator: string;
-  insertDate: boolean;
+  enableDateInserting: boolean;
   dateFormat: string;
   enableDoingStatus: boolean;
   disableDoingStatusForSubTasks: boolean;
@@ -16,7 +16,7 @@ export const DEFAULT_SETTINGS: Settings = {
   targetCssClasses: ["checkbox-time-tracker", "ctt"],
   timeFormat: "HH:mm",
   separator: "-",
-  insertDate: false,
+  enableDateInserting: false,
   dateFormat: "YYYY-MM-DD",
   enableDoingStatus: false,
   disableDoingStatusForSubTasks: false,
@@ -81,14 +81,16 @@ export class SettingTab extends PluginSettingTab {
       .setName("Enable date inserting")
       .setDesc("Insert the date in addition to the time.")
       .addToggle((tc) => {
-        tc.setValue(this.plugin.settings.insertDate).onChange(async (value) => {
-          this.plugin.settings.insertDate = value;
-          await this.plugin.saveSettings();
-          this.display();
-        });
+        tc.setValue(this.plugin.settings.enableDateInserting).onChange(
+          async (value) => {
+            this.plugin.settings.enableDateInserting = value;
+            await this.plugin.saveSettings();
+            this.display();
+          }
+        );
       });
 
-    if (this.plugin.settings.insertDate) {
+    if (this.plugin.settings.enableDateInserting) {
       const dateFormatSettingEl = new Setting(containerEl)
         .setName("Date format")
         .setDesc("The format of the date to insert. (default: YYYY-MM-DD)");
@@ -215,13 +217,13 @@ export class SettingTab extends PluginSettingTab {
     // @ts-ignore
     const end = moment().add(1, "hour");
 
-    const previewText = this.plugin.settings.insertDate
+    const previewText = this.plugin.settings.enableDateInserting
       ? `${end.format(this.plugin.settings.dateFormat)} ${end.format(
           this.plugin.settings.timeFormat
         )}`
       : `${end.format(this.plugin.settings.timeFormat)}`;
 
-    const previewTextDoing = this.plugin.settings.insertDate
+    const previewTextDoing = this.plugin.settings.enableDateInserting
       ? `${start.format(this.plugin.settings.dateFormat)} ${start.format(
           this.plugin.settings.timeFormat
         )}${this.plugin.settings.separator}${end.format(

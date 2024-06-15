@@ -8,7 +8,7 @@ const DEFAULT_SETTINGS = {
   targetCssClasses: ["checkbox-time-tracker", "ctt"],
   timeFormat: "HH:mm",
   separator: "-",
-  insertDate: false,
+  enableDateInserting: false,
   dateFormat: "YYYY-MM-DD",
   enableDoingStatus: false,
   disableDoingStatusForSubTasks: false,
