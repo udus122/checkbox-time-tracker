@@ -79,9 +79,9 @@ export class taskOperations {
   }
 
   public formatTask(task: Task): string {
-    const start = task.start?.format(this.settings.insertDateFormat) ?? "";
+    const start = task.start?.format(this.settings.timeFormat) ?? "";
     const startEndSeparator = task.start && task.end ? "-" : "";
-    const end = task.end?.format(this.settings.insertDateFormat) ?? "";
+    const end = task.end?.format(this.settings.timeFormat) ?? "";
     const bodySeparator = task.start || task.end ? " " : "";
     return (
       `${task.indentation}${task.listMarker} [${task.status.symbol}] ` +
