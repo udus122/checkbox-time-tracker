@@ -1,7 +1,6 @@
 // ref. https://github.com/sytone/obsidian-tasks/blob/main/src/LivePreviewExtension.ts
 import { EditorView, PluginValue } from "@codemirror/view";
 
-import { Task } from "./Task";
 import { Settings } from "./settings";
 import { taskOperations } from "./operations";
 import { Notice } from "obsidian";
@@ -60,14 +59,14 @@ export class LivePreviewExtension implements PluginValue {
       const { state } = this.view;
       const position = this.view.posAtDOM(target as Node);
       const line = state.doc.lineAt(position);
-      const task = Task.fromLine(line.text);
+
+      const taskOp = new taskOperations(this.settings);
+      const task = taskOp.parseLine(line.text);
 
       // Only handle checkboxes of tasks.
       if (!task) {
         return false;
       }
-
-      const taskOp = new taskOperations(this.settings);
 
       // Clicked on a task's checkbox. Toggle the task and set it.
       // Shift-click to cancel a task.
@@ -78,7 +77,7 @@ export class LivePreviewExtension implements PluginValue {
         changes: {
           from: line.from,
           to: line.to,
-          insert: toggled.toString(),
+          insert: taskOp.formatTask(toggled),
         },
       });
       this.view.dispatch(transaction);

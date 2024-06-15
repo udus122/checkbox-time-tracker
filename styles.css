@@ -1,0 +1,11 @@
+/* Settings styling */
+.setting-item-control.setting-error input {
+  border-color: var(--background-modifier-error);
+}
+
+.inserted-preview {
+  padding: 0.5rem;
+  border-radius: var(--radius-s);
+  background-color: var(--background-secondary);
+}
+

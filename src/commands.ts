@@ -1,5 +1,5 @@
 import { Command, Editor, Notice } from "obsidian";
-import { Task } from "./Task";
+
 import { taskOperations } from "./operations";
 import { Settings } from "./settings";
 
@@ -14,7 +14,8 @@ export function createCommands(settings: Settings): Command[] {
 
         const lineContent = editor.getLine(line);
 
-        const task = Task.fromLine(lineContent);
+        const taskOp = new taskOperations(settings);
+        const task = taskOp.parseLine(lineContent);
 
         if (!task) {
           new Notice("No task found");
@@ -22,10 +23,9 @@ export function createCommands(settings: Settings): Command[] {
         }
 
         try {
-          const taskOp = new taskOperations(settings);
           const toggled = taskOp.toggleTask(task);
 
-          editor.setLine(line, toggled.toString());
+          editor.setLine(line, taskOp.formatTask(toggled));
           editor.setCursor(line, ch);
         } catch (e) {
           new Notice(e.message);
@@ -40,7 +40,8 @@ export function createCommands(settings: Settings): Command[] {
         const { line, ch } = editor.getCursor();
         const lineContent = editor.getLine(line);
 
-        const task = Task.fromLine(lineContent);
+        const taskOp = new taskOperations(settings);
+        const task = taskOp.parseLine(lineContent);
 
         if (!task) {
           new Notice("No task found");
@@ -51,7 +52,7 @@ export function createCommands(settings: Settings): Command[] {
           const taskOp = new taskOperations(settings);
           const duplicated = taskOp.duplicateTask(task);
 
-          editor.replaceRange("\n" + duplicated.toString(), {
+          editor.replaceRange("\n" + taskOp.formatTask(duplicated), {
             line,
             ch: lineContent.length,
           });
@@ -70,8 +71,8 @@ export function createCommands(settings: Settings): Command[] {
 
         const lineContent = editor.getLine(line);
 
-        const task = Task.fromLine(lineContent);
-
+        const taskOp = new taskOperations(settings);
+        const task = taskOp.parseLine(lineContent);
         if (!task) {
           new Notice("No task found");
           return;
@@ -81,11 +82,11 @@ export function createCommands(settings: Settings): Command[] {
           const taskOp = new taskOperations(settings);
 
           const ended = taskOp.endTask(task);
-          editor.setLine(line, ended.toString());
+          editor.setLine(line, taskOp.formatTask(ended));
 
           const duplicated = taskOp.duplicateTask(ended);
 
-          editor.replaceRange("\n" + duplicated.toString(), {
+          editor.replaceRange("\n" + taskOp.formatTask(duplicated), {
             line,
             ch: editor.getLine(line).length,
           });
