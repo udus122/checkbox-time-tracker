@@ -158,12 +158,12 @@ export class SettingTab extends PluginSettingTab {
             .setPlaceholder("-")
             .setValue(this.plugin.settings.separator)
             .onChange(async (value) => {
-              const noAlloedChars = /[$*+?.|()\\[\]{}]/;
-              if (noAlloedChars.test(value)) {
+              const disallowedCharsRegex = /[$*+?.|()\\[\]{}]/;
+              if (disallowedCharsRegex.test(value)) {
                 separatorEl.controlEl.addClass("setting-error");
                 new Notice("Separator should not contain special characters.");
                 this.plugin.settings.separator = value.replaceAll(
-                  noAlloedChars,
+                  disallowedCharsRegex,
                   ""
                 );
                 await this.plugin.saveSettings();
