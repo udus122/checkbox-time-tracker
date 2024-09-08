@@ -10,6 +10,7 @@ const DEFAULT_SETTINGS = {
   separator: "-",
   enableDateInserting: false,
   dateFormat: "YYYY-MM-DD",
+  omitEndDateOnSameDate: false,
   enableDoingStatus: false,
   disableDoingStatusForSubTasks: false,
   autoIncrementOnSameTime: false,
@@ -324,6 +325,56 @@ describe("formatTask", () => {
     const settings = {
       ...DEFAULT_SETTINGS,
       enableDateInserting: true,
+      separator: " - ",
+    };
+    const taskOp = new taskOperations(settings);
+
+    const result = taskOp.formatTask(task);
+
+    expect(result).toBe(
+      "  - [x] 2024-06-15 10:00 - 2024-06-16 12:00 Task content"
+    );
+  });
+
+  it("  - [x] 2024-06-15 10:00 - 12:00 Task content", () => {
+    const task = new Task({
+      indentation: "  ",
+      listMarker: "-",
+      checkboxBody: "Task content",
+      status: Status.Done(),
+      start: moment("2024-06-15 10:00", "YYYY-MM-DD HH:mm"),
+      end: moment("2024-06-15 12:00", "YYYY-MM-DD HH:mm"),
+      taskBody: "Task content",
+    });
+
+    const settings = {
+      ...DEFAULT_SETTINGS,
+      enableDateInserting: true,
+      omitEndDateOnSameDate: true,
+      separator: " - ",
+    };
+    const taskOp = new taskOperations(settings);
+
+    const result = taskOp.formatTask(task);
+
+    expect(result).toBe("  - [x] 2024-06-15 10:00 - 12:00 Task content");
+  });
+
+  it("  - [x] 2024-06-15 10:00 - 2024-06-16 12:00 Task content", () => {
+    const task = new Task({
+      indentation: "  ",
+      listMarker: "-",
+      checkboxBody: "Task content",
+      status: Status.Done(),
+      start: moment("2024-06-15 10:00", "YYYY-MM-DD HH:mm"),
+      end: moment("2024-06-16 12:00", "YYYY-MM-DD HH:mm"),
+      taskBody: "Task content",
+    });
+
+    const settings = {
+      ...DEFAULT_SETTINGS,
+      enableDateInserting: true,
+      omitEndDateOnSameDate: true,
       separator: " - ",
     };
     const taskOp = new taskOperations(settings);
