@@ -74,6 +74,12 @@ This setting inserts the date as follows: `- [x] [[2024-01-01]] 12:00 ...`
 
 ![setting_daily_note](./docs/images/setting_daily_note.jpg)
 
+### Omit end date if the start and end date are the same to avoid duplication
+
+This setting inserts the date as follows: `- [x] 2024-01-01 12:00 - 13:00 ...`
+
+![setting_omit_end_date](./docs/images/setting_omit_end_date.jpg)
+
 
 ## Doing status style
 
