@@ -208,11 +208,19 @@ export class taskOperations {
 
   public formatTask(task: Task): string {
     const start = task.start?.format(this.datetimeFormat) ?? "";
-    // const startEndSeparator = task.start && task.end ? "-" : "";
+
     const startEndSeparator =
       task.start && task.end ? this.settings.separator : "";
-    const end = task.end?.format(this.datetimeFormat) ?? "";
+
+    const endDatetimeFormat =
+      this.settings.omitEndDateOnSameDate && task.start?.isSame(task.end, "day")
+        ? this.settings.timeFormat
+        : this.datetimeFormat;
+
+    const end = task.end?.format(endDatetimeFormat) ?? "";
+
     const bodySeparator = task.start || task.end ? " " : "";
+
     return (
       `${task.indentation}${task.listMarker} [${task.status.symbol}] ` +
       `${start}${startEndSeparator}${end}` +

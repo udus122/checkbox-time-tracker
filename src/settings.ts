@@ -1,5 +1,8 @@
 import { moment, App, Notice, PluginSettingTab, Setting } from "obsidian";
 import Main from "./main";
+import { taskOperations } from "./operations";
+import { Task } from "./Task";
+import { Status } from "./Status";
 
 export interface Settings {
   targetCssClasses: string[];
@@ -7,6 +10,7 @@ export interface Settings {
   separator: string;
   enableDateInserting: boolean;
   dateFormat: string;
+  omitEndDateOnSameDate: boolean;
   enableDoingStatus: boolean;
   disableDoingStatusForSubTasks: boolean;
   autoIncrementOnSameTime: boolean;
@@ -18,6 +22,7 @@ export const DEFAULT_SETTINGS: Settings = {
   separator: "-",
   enableDateInserting: false,
   dateFormat: "YYYY-MM-DD",
+  omitEndDateOnSameDate: false,
   enableDoingStatus: false,
   disableDoingStatusForSubTasks: false,
   autoIncrementOnSameTime: false,
@@ -212,26 +217,38 @@ export class SettingTab extends PluginSettingTab {
         });
     }
 
-    // @ts-ignore
-    const start = moment();
-    // @ts-ignore
-    const end = moment().add(1, "hour");
+    if (
+      this.plugin.settings.enableDoingStatus &&
+      this.plugin.settings.enableDateInserting
+    ) {
+      new Setting(containerEl)
+        .setName("Omit end date on same date")
+        .setDesc(
+          "If the end date is the same as the start date, do not insert end date to avoid duplication."
+        )
+        .addToggle((tc) => {
+          tc.setValue(this.plugin.settings.omitEndDateOnSameDate).onChange(
+            async (value) => {
+              this.plugin.settings.omitEndDateOnSameDate = value;
+              await this.plugin.saveSettings();
+              this.display();
+            }
+          );
+        });
+    }
 
-    const previewText = this.plugin.settings.enableDateInserting
-      ? `${end.format(this.plugin.settings.dateFormat)} ${end.format(
-          this.plugin.settings.timeFormat
-        )}`
-      : `${end.format(this.plugin.settings.timeFormat)}`;
-
-    const previewTextDoing = this.plugin.settings.enableDateInserting
-      ? `${start.format(this.plugin.settings.dateFormat)} ${start.format(
-          this.plugin.settings.timeFormat
-        )}${this.plugin.settings.separator}${end.format(
-          this.plugin.settings.dateFormat
-        )} ${end.format(this.plugin.settings.timeFormat)}`
-      : `${start.format(this.plugin.settings.timeFormat)}${
-          this.plugin.settings.separator
-        }${end.format(this.plugin.settings.timeFormat)}`;
+    const taskOp = new taskOperations(this.plugin.settings);
+    const TASK_SETTINGS = {
+      indentation: "",
+      listMarker: "-",
+      checkboxBody: "",
+      status: Status.Doing(),
+      // @ts-ignore
+      start: moment(),
+      // @ts-ignore
+      end: moment().add(1, "hour"),
+      taskBody: "Example task",
+    };
 
     const desc = containerEl.createEl("p", {
       text: "Preview inserted datetime: ",
@@ -239,8 +256,19 @@ export class SettingTab extends PluginSettingTab {
     });
     desc.createEl("span", {
       text: this.plugin.settings.enableDoingStatus
-        ? previewTextDoing
-        : previewText,
+        ? taskOp.formatTask(
+            new Task({
+              ...TASK_SETTINGS,
+              status: Status.Done(),
+            })
+          )
+        : taskOp.formatTask(
+            new Task({
+              ...TASK_SETTINGS,
+              status: Status.Done(),
+              start: undefined,
+            })
+          ),
     });
   }
 }
