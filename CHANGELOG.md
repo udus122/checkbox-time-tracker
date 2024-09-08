@@ -1,5 +1,8 @@
 # Changelog
 
+## [0.8.2](https://github.com/udus122/checkbox-time-tracker/compare/0.8.1...0.8.2) - 2024-09-08
+- Feature/70 by @udus122 in https://github.com/udus122/checkbox-time-tracker/pull/71
+
 ## [0.8.1](https://github.com/udus122/checkbox-time-tracker/compare/0.8.0...0.8.1) - 2024-06-15
 - update packages by @udus122 in https://github.com/udus122/checkbox-time-tracker/pull/67
 
